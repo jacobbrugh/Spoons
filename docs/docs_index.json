@@ -2831,26 +2831,14 @@
     "type": "Variable"
   },
   {
-    "desc": "Visual, searchable pasteboard (ie clipboard) history",
+    "desc": "Clipboard history via clipboard-cli service with fuzzy search (nucleo)",
     "name": "Seal.plugins.pasteboard",
     "type": "Module"
   },
   {
     "desc": "",
     "module": "Seal.plugins.pasteboard",
-    "name": "historySize",
-    "type": "Variable"
-  },
-  {
-    "desc": "",
-    "module": "Seal.plugins.pasteboard",
-    "name": "saveHistory",
-    "type": "Variable"
-  },
-  {
-    "desc": "",
-    "module": "Seal.plugins.pasteboard",
-    "name": "skipUTIs",
+    "name": "historyLimit",
     "type": "Variable"
   },
   {
