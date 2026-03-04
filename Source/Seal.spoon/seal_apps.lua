@@ -30,6 +30,7 @@ obj.appSearchPaths = {
 
 local modifyNameMap = function(info, add)
    for _, item in ipairs(info) do
+      if not item.kMDItemPath then goto continue end
       icon = nil
       local displayname = item.kMDItemDisplayName or hs.fs.displayName(item.kMDItemPath)
       displayname = displayname:gsub("%.app$", "", 1)
@@ -52,6 +53,7 @@ local modifyNameMap = function(info, add)
       else
          obj.appCache[displayname] = nil
       end
+      ::continue::
    end
 end
 
