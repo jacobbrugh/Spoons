@@ -1,6 +1,6 @@
 --- ==== Seal.plugins.pasteboard ====
 ---
---- Clipboard history powered by clipboard-cli service with fuzzy search
+--- Clipboard history via clipboard-cli service with fuzzy search (nucleo)
 local obj = {}
 obj.__index = obj
 obj.__name = "seal_pasteboard"
