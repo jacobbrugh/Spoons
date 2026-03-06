@@ -130,11 +130,41 @@ local function fetchSearch(query, limit)
     return choices
 end
 
-function obj.choicesPasteboardCommand(query)
-    if not query or query == "" then
-        return fetchHistory(obj.historyLimit)
+local function checkSyncStatus()
+    local home = os.getenv("HOME")
+    if not home then return nil end
+    -- macOS: ~/Library/Application Support/clipboard-sync/sync-status.json
+    local statusPath = home .. "/Library/Application Support/clipboard-sync/sync-status.json"
+    local f = io.open(statusPath, "r")
+    if not f then return nil end
+    local content = f:read("*a")
+    f:close()
+    local status = hs.json.decode(content)
+    if not status then return nil end
+    if status.status ~= "ok" then
+        return status.error or "Unknown sync error"
     end
-    return fetchSearch(query, obj.historyLimit)
+    return nil
+end
+
+function obj.choicesPasteboardCommand(query)
+    local choices
+    if not query or query == "" then
+        choices = fetchHistory(obj.historyLimit)
+    else
+        choices = fetchSearch(query, obj.historyLimit)
+    end
+
+    local syncError = checkSyncStatus()
+    if syncError then
+        table.insert(choices, 1, {
+            text = "⚠ Clipboard sync error",
+            subText = syncError,
+            plugin = obj.__name,
+            type = "warning",
+        })
+    end
+    return choices
 end
 
 function obj.completionCallback(rowInfo)
