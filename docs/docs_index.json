@@ -2843,6 +2843,12 @@
   },
   {
     "desc": "",
+    "module": "Seal.plugins.pasteboard",
+    "name": "searchLimit",
+    "type": "Variable"
+  },
+  {
+    "desc": "",
     "name": "Seal.plugins.safari_bookmarks",
     "type": "Module"
   },

@@ -15541,12 +15541,23 @@
       {
         "def": "Seal.plugins.pasteboard.historyLimit",
         "desc": "",
-        "doc": "\nThe number of history items to fetch. Defaults to 50",
+        "doc": "\nMax rows shown when opening the picker with an empty query.\nBig numbers are fine for browsing; hs.chooser renders them lazily.",
         "file": "Source/Seal.spoon/seal_pasteboard.lua",
         "lineno": "8",
         "name": "historyLimit",
         "signature": "Seal.plugins.pasteboard.historyLimit",
-        "stripped_doc": "The number of history items to fetch. Defaults to 50",
+        "stripped_doc": "Max rows shown when opening the picker with an empty query.\nBig numbers are fine for browsing; hs.chooser renders them lazily.",
+        "type": "Variable"
+      },
+      {
+        "def": "Seal.plugins.pasteboard.searchLimit",
+        "desc": "",
+        "doc": "\nMax rows returned per live-search keystroke. Keep this small —\ncommon queries like \"test\" match thousands of entries and the\nJSON payload + hs.chooser rebuild runs on every keypress.",
+        "file": "Source/Seal.spoon/seal_pasteboard.lua",
+        "lineno": "15",
+        "name": "searchLimit",
+        "signature": "Seal.plugins.pasteboard.searchLimit",
+        "stripped_doc": "Max rows returned per live-search keystroke. Keep this small —\ncommon queries like \"test\" match thousands of entries and the\nJSON payload + hs.chooser rebuild runs on every keypress.",
         "type": "Variable"
       }
     ],
@@ -15556,12 +15567,23 @@
       {
         "def": "Seal.plugins.pasteboard.historyLimit",
         "desc": "",
-        "doc": "\nThe number of history items to fetch. Defaults to 50",
+        "doc": "\nMax rows shown when opening the picker with an empty query.\nBig numbers are fine for browsing; hs.chooser renders them lazily.",
         "file": "Source/Seal.spoon/seal_pasteboard.lua",
         "lineno": "8",
         "name": "historyLimit",
         "signature": "Seal.plugins.pasteboard.historyLimit",
-        "stripped_doc": "The number of history items to fetch. Defaults to 50",
+        "stripped_doc": "Max rows shown when opening the picker with an empty query.\nBig numbers are fine for browsing; hs.chooser renders them lazily.",
+        "type": "Variable"
+      },
+      {
+        "def": "Seal.plugins.pasteboard.searchLimit",
+        "desc": "",
+        "doc": "\nMax rows returned per live-search keystroke. Keep this small —\ncommon queries like \"test\" match thousands of entries and the\nJSON payload + hs.chooser rebuild runs on every keypress.",
+        "file": "Source/Seal.spoon/seal_pasteboard.lua",
+        "lineno": "15",
+        "name": "searchLimit",
+        "signature": "Seal.plugins.pasteboard.searchLimit",
+        "stripped_doc": "Max rows returned per live-search keystroke. Keep this small —\ncommon queries like \"test\" match thousands of entries and the\nJSON payload + hs.chooser rebuild runs on every keypress.",
         "type": "Variable"
       }
     ],
