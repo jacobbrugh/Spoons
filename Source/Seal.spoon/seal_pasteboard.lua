@@ -1,27 +1,30 @@
 --- ==== Seal.plugins.pasteboard ====
 ---
---- Clipboard history backed by the clipboard-cli sync daemon. Per-keystroke
---- list responses carry only a short SUBSTR preview; full text is fetched
---- on selection via a separate socket round-trip, so payload size stays
---- flat regardless of how large the underlying clipboard entries are.
+--- Clipboard history backed by the clipboard-cli sync daemon.
+---
+--- Per-keystroke list responses carry only a SUBSTR preview of each
+--- entry's text; full text is fetched on paste. All socket traffic
+--- goes through `nc -U` via `io.popen` — no login shell, no
+--- clipboard-cli process startup, no hs.execute round-trip.
 local obj = {}
 obj.__index = obj
 obj.__name = "seal_pasteboard"
 
---- Seal.plugins.pasteboard.historyLimit
---- Variable
----
---- Max rows shown when opening the picker with an empty query.
---- Preview-mode payload is ~500 B per row, so big numbers are cheap.
-obj.historyLimit = 1000
+--- Seal.plugins.pasteboard.historyLimit — max rows on open.
+obj.historyLimit = 500
 
---- Seal.plugins.pasteboard.searchLimit
---- Variable
----
---- Max rows returned per live-search keystroke. Preview-mode responses
---- are small enough that 5000 is snappy even on huge histories; the
---- underlying bottleneck is now hs.chooser render, not JSON size.
-obj.searchLimit = 5000
+--- Seal.plugins.pasteboard.searchLimit — max rows per keystroke.
+obj.searchLimit = 500
+
+--- Seal.plugins.pasteboard.previewChars — SUBSTR window for list rows.
+obj.previewChars = 500
+
+--- Seal.plugins.pasteboard.socketPath — Unix socket the sync daemon listens on.
+obj.socketPath = (os.getenv("HOME") or "") ..
+    "/Library/Application Support/clipboard-sync/query.sock"
+
+--- Seal.plugins.pasteboard.nc — path to a `nc`/`netcat` that supports `-U`.
+obj.nc = "/usr/bin/nc"
 
 function obj:commands()
     return {
@@ -30,8 +33,8 @@ function obj:commands()
             fn = obj.choicesPasteboardCommand,
             name = "Pasteboard",
             description = "Pasteboard history",
-            plugin = obj.__name
-        }
+            plugin = obj.__name,
+        },
     }
 end
 
@@ -39,143 +42,110 @@ function obj:bare()
     return nil
 end
 
--- Creates a preview of text showing only the first few non-whitespace-only lines
--- @param text string The full text to preview
--- @param maxLines number Maximum number of non-whitespace-only lines to include (default 3)
--- @return string The preview text
-local function createPreview(text, maxLines)
-    maxLines = maxLines or 3
-    local lines = {}
-    local count = 0
+-- Minimal shell-escape for single-quoted arguments.
+local function sq(s)
+    return "'" .. (s or ""):gsub("'", [['\'']]) .. "'"
+end
 
-    for line in text:gmatch("[^\r\n]*") do
-        if line:match("%S") then
-            table.insert(lines, line)
-            count = count + 1
-            if count >= maxLines then
-                break
-            end
-        end
-    end
-
-    local preview = table.concat(lines, "\n")
-    if #preview < #text then
-        preview = preview .. " ..."
-    end
-    return preview
+-- Send one newline-delimited JSON request to the query socket. Returns
+-- the decoded response table (possibly with an `error` key) or nil on
+-- transport failure.
+local function socketCall(request)
+    local body = hs.json.encode(request)
+    if not body then return nil end
+    -- printf avoids a trailing newline issue; nc writes, reads one
+    -- response line, and exits.
+    local cmd = "/bin/sh -c " .. sq(
+        "printf '%s\\n' " .. sq(body) ..
+        " | " .. obj.nc .. " -U " .. sq(obj.socketPath)
+    )
+    local f = io.popen(cmd, "r")
+    if not f then return nil end
+    local out = f:read("*a")
+    f:close()
+    if not out or out == "" then return nil end
+    return hs.json.decode(out)
 end
 
 local function previewToChoice(p)
-    if not p.preview or p.preview == "" then
-        return nil
-    end
+    if not p.preview or p.preview == "" then return nil end
 
-    local parts = {}
+    local subparts = {}
     local app = p.metadata and p.metadata.source_app_name
-    if app and app ~= "" then
-        table.insert(parts, app)
-    end
+    if app and app ~= "" then table.insert(subparts, app) end
     if p.device_id and p.device_id ~= "" then
-        table.insert(parts, p.device_id)
+        table.insert(subparts, p.device_id)
     end
     if p.created_at and p.created_at ~= "" then
-        table.insert(parts, p.created_at)
+        table.insert(subparts, p.created_at)
     end
-    if p.truncated then
-        table.insert(parts, "…truncated")
-    end
+    if p.truncated then table.insert(subparts, "…truncated") end
+
+    -- hs.chooser renders `text` as a single line — grabbing the first
+    -- non-blank line of the SUBSTR preview keeps the row readable
+    -- without running gmatch across the whole preview.
+    local first = p.preview:match("([^\r\n]+)") or p.preview
 
     return {
         uuid = p.id,
-        text = createPreview(p.preview, 10),
-        -- fullText intentionally omitted: the completion callback
-        -- fetches the real text by id via `clipboard-cli paste`.
+        text = first,
         plugin = obj.__name,
         type = "copy",
-        subText = table.concat(parts, " · "),
+        subText = table.concat(subparts, " · "),
     }
 end
 
-local function runCli(args)
-    local cmd = "clipboard-cli " .. args
-    local output, status = hs.execute(cmd, true)
-    if not status then
-        print("seal_pasteboard: clipboard-cli failed: " .. (output or ""))
-        return nil
+local function previewsToChoices(previews)
+    local choices = {}
+    if not previews then return choices end
+    for i = 1, #previews do
+        local c = previewToChoice(previews[i])
+        if c then choices[#choices + 1] = c end
     end
-    -- Strip shell integration escape sequences (e.g., iTerm2 OSC codes)
-    -- that appear before the JSON output when using the user's login shell.
-    if output then
-        local jsonStart = output:find("[%[{]")
-        if jsonStart then
-            output = output:sub(jsonStart)
-        end
-    end
-    return output
+    return choices
 end
 
 local function fetchHistory(limit)
-    local output = runCli("history --limit " .. limit .. " --format json 2>/dev/null")
-    if not output or output == "" then
+    local resp = socketCall({
+        cmd = "history",
+        limit = limit,
+        preview_chars = obj.previewChars,
+    })
+    if not resp then return {} end
+    if resp.error then
+        print("seal_pasteboard: history error: " .. tostring(resp.error))
         return {}
     end
-
-    local previews = hs.json.decode(output)
-    if not previews then
-        return {}
-    end
-
-    local choices = {}
-    for _, p in ipairs(previews) do
-        local choice = previewToChoice(p)
-        if choice then
-            table.insert(choices, choice)
-        end
-    end
-    return choices
+    return previewsToChoices(resp.previews)
 end
 
 local function fetchSearch(query, limit)
-    -- Shell-escape the query to prevent injection
-    local escaped = query:gsub("'", "'\\''")
-    local output = runCli("search '" .. escaped .. "' --limit " .. limit .. " --format json 2>/dev/null")
-    if not output or output == "" then
+    local resp = socketCall({
+        cmd = "search",
+        query = query,
+        limit = limit,
+        preview_chars = obj.previewChars,
+    })
+    if not resp then return {} end
+    if resp.error then
+        print("seal_pasteboard: search error: " .. tostring(resp.error))
         return {}
     end
-
-    local previews = hs.json.decode(output)
-    if not previews then
-        return {}
-    end
-
-    local choices = {}
-    for _, p in ipairs(previews) do
-        local choice = previewToChoice(p)
-        if choice then
-            table.insert(choices, choice)
-        end
-    end
-    return choices
+    return previewsToChoices(resp.previews)
 end
 
 local function fetchFull(id)
     if not id or id == "" then return nil end
-    local escaped = id:gsub("'", "'\\''")
-    local cmd = "clipboard-cli paste '" .. escaped .. "' 2>/dev/null"
-    local output, status = hs.execute(cmd, true)
-    if not status then
-        print("seal_pasteboard: clipboard-cli paste failed: " .. (output or ""))
-        return nil
-    end
-    return output
+    local resp = socketCall({ cmd = "get_full", id = id })
+    if not resp or resp.error or not resp.entry then return nil end
+    return resp.entry.text_content
 end
 
 local function checkSyncStatus()
     local home = os.getenv("HOME")
     if not home then return nil end
-    -- macOS: ~/Library/Application Support/clipboard-sync/sync-status.json
-    local statusPath = home .. "/Library/Application Support/clipboard-sync/sync-status.json"
-    local f = io.open(statusPath, "r")
+    local path = home .. "/Library/Application Support/clipboard-sync/sync-status.json"
+    local f = io.open(path, "r")
     if not f then return nil end
     local content = f:read("*a")
     f:close()
@@ -208,22 +178,21 @@ function obj.choicesPasteboardCommand(query)
 end
 
 function obj.completionCallback(rowInfo)
-    if rowInfo["type"] == "copy" then
-        local full = fetchFull(rowInfo["uuid"])
-        if not full or full == "" then
-            print("seal_pasteboard: failed to fetch full text for " .. tostring(rowInfo["uuid"]))
-            return
-        end
-        hs.pasteboard.setContents(full)
-
-        if obj.seal and obj.seal.chooser then
-            obj.seal.chooser:query("")
-        end
-
-        hs.timer.doAfter(0.05, function()
-            hs.eventtap.keyStroke({"cmd"}, "v")
-        end)
+    if rowInfo["type"] ~= "copy" then return end
+    local full = fetchFull(rowInfo["uuid"])
+    if not full or full == "" then
+        print("seal_pasteboard: empty full text for " .. tostring(rowInfo["uuid"]))
+        return
     end
+    hs.pasteboard.setContents(full)
+
+    if obj.seal and obj.seal.chooser then
+        obj.seal.chooser:query("")
+    end
+
+    hs.timer.doAfter(0.05, function()
+        hs.eventtap.keyStroke({ "cmd" }, "v")
+    end)
 end
 
 return obj
