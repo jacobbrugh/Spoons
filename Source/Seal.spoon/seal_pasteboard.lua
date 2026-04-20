@@ -8,8 +8,17 @@ obj.__name = "seal_pasteboard"
 --- Seal.plugins.pasteboard.historyLimit
 --- Variable
 ---
---- The number of history items to fetch. Defaults to 50
+--- Max rows shown when opening the picker with an empty query.
+--- Big numbers are fine for browsing; hs.chooser renders them lazily.
 obj.historyLimit = 50
+
+--- Seal.plugins.pasteboard.searchLimit
+--- Variable
+---
+--- Max rows returned per live-search keystroke. Keep this small —
+--- common queries like "test" match thousands of entries and the
+--- JSON payload + hs.chooser rebuild runs on every keypress.
+obj.searchLimit = 50
 
 function obj:commands()
     return {
@@ -58,13 +67,26 @@ local function entryToChoice(entry)
         return nil
     end
 
+    -- Build subText from: source app (if captured) · device · timestamp
+    local parts = {}
+    local app = entry.metadata and entry.metadata.source_app_name
+    if app and app ~= "" then
+        table.insert(parts, app)
+    end
+    if entry.device_id and entry.device_id ~= "" then
+        table.insert(parts, entry.device_id)
+    end
+    if entry.created_at and entry.created_at ~= "" then
+        table.insert(parts, entry.created_at)
+    end
+
     return {
         uuid = entry.id,
         text = createPreview(entry.text_content, 10),
         fullText = entry.text_content,
         plugin = obj.__name,
         type = "copy",
-        subText = (entry.device_id or "") .. " :: " .. (entry.created_at or ""),
+        subText = table.concat(parts, " · "),
     }
 end
 
@@ -152,7 +174,7 @@ function obj.choicesPasteboardCommand(query)
     if not query or query == "" then
         choices = fetchHistory(obj.historyLimit)
     else
-        choices = fetchSearch(query, obj.historyLimit)
+        choices = fetchSearch(query, obj.searchLimit)
     end
 
     local syncError = checkSyncStatus()
