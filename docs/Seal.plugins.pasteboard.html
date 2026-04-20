@@ -15,7 +15,10 @@
   <body>
     <header>
       <h1><a href="./index.html">docs</a> &raquo; Seal.plugins.pasteboard</h1>
-      <p>Clipboard history via clipboard-cli service with fuzzy search (nucleo)</p>
+      <p>Clipboard history backed by the clipboard-cli sync daemon. Per-keystroke
+list responses carry only a short SUBSTR preview; full text is fetched
+on selection via a separate socket round-trip, so payload size stays
+flat regardless of how large the underlying clipboard entries are.</p>
 
       </header>
       <h3>API Overview</h3>
@@ -46,7 +49,7 @@
               </tr>
               <tr>
                 <th>Source</th>
-                <td><a href="https://github.com/Hammerspoon/Spoons/blob/master/Source/Seal.spoon/seal_pasteboard.lua#L8">Source/Seal.spoon/seal_pasteboard.lua line 8</a></td>
+                <td><a href="https://github.com/Hammerspoon/Spoons/blob/master/Source/Seal.spoon/seal_pasteboard.lua#L11">Source/Seal.spoon/seal_pasteboard.lua line 11</a></td>
               </tr>
             </table>
           </section>
@@ -68,7 +71,7 @@
               </tr>
               <tr>
                 <th>Source</th>
-                <td><a href="https://github.com/Hammerspoon/Spoons/blob/master/Source/Seal.spoon/seal_pasteboard.lua#L15">Source/Seal.spoon/seal_pasteboard.lua line 15</a></td>
+                <td><a href="https://github.com/Hammerspoon/Spoons/blob/master/Source/Seal.spoon/seal_pasteboard.lua#L18">Source/Seal.spoon/seal_pasteboard.lua line 18</a></td>
               </tr>
             </table>
           </section>

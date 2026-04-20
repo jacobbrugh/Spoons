@@ -2831,7 +2831,7 @@
     "type": "Variable"
   },
   {
-    "desc": "Clipboard history via clipboard-cli service with fuzzy search (nucleo)",
+    "desc": "Clipboard history backed by the clipboard-cli sync daemon. Per-keystroke",
     "name": "Seal.plugins.pasteboard",
     "type": "Module"
   },
