@@ -1,6 +1,9 @@
 --- ==== Seal.plugins.pasteboard ====
 ---
---- Clipboard history via clipboard-cli service with fuzzy search (nucleo)
+--- Clipboard history backed by the clipboard-cli sync daemon. Per-keystroke
+--- list responses carry only a short SUBSTR preview; full text is fetched
+--- on selection via a separate socket round-trip, so payload size stays
+--- flat regardless of how large the underlying clipboard entries are.
 local obj = {}
 obj.__index = obj
 obj.__name = "seal_pasteboard"
@@ -9,16 +12,16 @@ obj.__name = "seal_pasteboard"
 --- Variable
 ---
 --- Max rows shown when opening the picker with an empty query.
---- Big numbers are fine for browsing; hs.chooser renders them lazily.
-obj.historyLimit = 50
+--- Preview-mode payload is ~500 B per row, so big numbers are cheap.
+obj.historyLimit = 1000
 
 --- Seal.plugins.pasteboard.searchLimit
 --- Variable
 ---
---- Max rows returned per live-search keystroke. Keep this small —
---- common queries like "test" match thousands of entries and the
---- JSON payload + hs.chooser rebuild runs on every keypress.
-obj.searchLimit = 50
+--- Max rows returned per live-search keystroke. Preview-mode responses
+--- are small enough that 5000 is snappy even on huge histories; the
+--- underlying bottleneck is now hs.chooser render, not JSON size.
+obj.searchLimit = 5000
 
 function obj:commands()
     return {
@@ -62,28 +65,31 @@ local function createPreview(text, maxLines)
     return preview
 end
 
-local function entryToChoice(entry)
-    if not entry.text_content or entry.text_content == "" then
+local function previewToChoice(p)
+    if not p.preview or p.preview == "" then
         return nil
     end
 
-    -- Build subText from: source app (if captured) · device · timestamp
     local parts = {}
-    local app = entry.metadata and entry.metadata.source_app_name
+    local app = p.metadata and p.metadata.source_app_name
     if app and app ~= "" then
         table.insert(parts, app)
     end
-    if entry.device_id and entry.device_id ~= "" then
-        table.insert(parts, entry.device_id)
+    if p.device_id and p.device_id ~= "" then
+        table.insert(parts, p.device_id)
     end
-    if entry.created_at and entry.created_at ~= "" then
-        table.insert(parts, entry.created_at)
+    if p.created_at and p.created_at ~= "" then
+        table.insert(parts, p.created_at)
+    end
+    if p.truncated then
+        table.insert(parts, "…truncated")
     end
 
     return {
-        uuid = entry.id,
-        text = createPreview(entry.text_content, 10),
-        fullText = entry.text_content,
+        uuid = p.id,
+        text = createPreview(p.preview, 10),
+        -- fullText intentionally omitted: the completion callback
+        -- fetches the real text by id via `clipboard-cli paste`.
         plugin = obj.__name,
         type = "copy",
         subText = table.concat(parts, " · "),
@@ -98,9 +104,9 @@ local function runCli(args)
         return nil
     end
     -- Strip shell integration escape sequences (e.g., iTerm2 OSC codes)
-    -- that appear before the JSON output when using the user's login shell
+    -- that appear before the JSON output when using the user's login shell.
     if output then
-        local jsonStart = output:find("%[")
+        local jsonStart = output:find("[%[{]")
         if jsonStart then
             output = output:sub(jsonStart)
         end
@@ -114,14 +120,14 @@ local function fetchHistory(limit)
         return {}
     end
 
-    local entries = hs.json.decode(output)
-    if not entries then
+    local previews = hs.json.decode(output)
+    if not previews then
         return {}
     end
 
     local choices = {}
-    for _, entry in ipairs(entries) do
-        local choice = entryToChoice(entry)
+    for _, p in ipairs(previews) do
+        local choice = previewToChoice(p)
         if choice then
             table.insert(choices, choice)
         end
@@ -137,19 +143,31 @@ local function fetchSearch(query, limit)
         return {}
     end
 
-    local entries = hs.json.decode(output)
-    if not entries then
+    local previews = hs.json.decode(output)
+    if not previews then
         return {}
     end
 
     local choices = {}
-    for _, entry in ipairs(entries) do
-        local choice = entryToChoice(entry)
+    for _, p in ipairs(previews) do
+        local choice = previewToChoice(p)
         if choice then
             table.insert(choices, choice)
         end
     end
     return choices
+end
+
+local function fetchFull(id)
+    if not id or id == "" then return nil end
+    local escaped = id:gsub("'", "'\\''")
+    local cmd = "clipboard-cli paste '" .. escaped .. "' 2>/dev/null"
+    local output, status = hs.execute(cmd, true)
+    if not status then
+        print("seal_pasteboard: clipboard-cli paste failed: " .. (output or ""))
+        return nil
+    end
+    return output
 end
 
 local function checkSyncStatus()
@@ -191,7 +209,12 @@ end
 
 function obj.completionCallback(rowInfo)
     if rowInfo["type"] == "copy" then
-        hs.pasteboard.setContents(rowInfo["fullText"])
+        local full = fetchFull(rowInfo["uuid"])
+        if not full or full == "" then
+            print("seal_pasteboard: failed to fetch full text for " .. tostring(rowInfo["uuid"]))
+            return
+        end
+        hs.pasteboard.setContents(full)
 
         if obj.seal and obj.seal.chooser then
             obj.seal.chooser:query("")
