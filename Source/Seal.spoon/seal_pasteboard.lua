@@ -47,14 +47,15 @@ local function sq(s)
     return "'" .. (s or ""):gsub("'", [['\'']]) .. "'"
 end
 
--- Send one newline-delimited JSON request to the query socket. Returns
--- the decoded response table (possibly with an `error` key) or nil on
--- transport failure.
-local function socketCall(request)
+-- Send one JSON request to the query socket and return the raw response
+-- bytes (nil on transport failure). Used for both the JSON path
+-- (`get_full`) and the TSV path (`history`/`search`) — the caller
+-- picks the framing by setting `preview_format` on the request.
+local function socketSend(request)
     local body = hs.json.encode(request)
     if not body then return nil end
-    -- printf avoids a trailing newline issue; nc writes, reads one
-    -- response line, and exits.
+    -- printf writes the request line; nc reads one line, server
+    -- responds, nc exits on EOF.
     local cmd = "/bin/sh -c " .. sq(
         "printf '%s\\n' " .. sq(body) ..
         " | " .. obj.nc .. " -U " .. sq(obj.socketPath)
@@ -64,79 +65,67 @@ local function socketCall(request)
     local out = f:read("*a")
     f:close()
     if not out or out == "" then return nil end
+    return out
+end
+
+local function socketJson(request)
+    local out = socketSend(request)
+    if not out then return nil end
     return hs.json.decode(out)
 end
 
-local function previewToChoice(p)
-    if not p.preview or p.preview == "" then return nil end
-
-    local subparts = {}
-    local app = p.metadata and p.metadata.source_app_name
-    if app and app ~= "" then table.insert(subparts, app) end
-    if p.device_id and p.device_id ~= "" then
-        table.insert(subparts, p.device_id)
-    end
-    if p.created_at and p.created_at ~= "" then
-        table.insert(subparts, p.created_at)
-    end
-    if p.truncated then table.insert(subparts, "…truncated") end
-
-    -- hs.chooser renders `text` as a single line — grabbing the first
-    -- non-blank line of the SUBSTR preview keeps the row readable
-    -- without running gmatch across the whole preview.
-    local first = p.preview:match("([^\r\n]+)") or p.preview
-
-    return {
-        uuid = p.id,
-        text = first,
-        plugin = obj.__name,
-        type = "copy",
-        subText = table.concat(subparts, " · "),
-    }
-end
-
-local function previewsToChoices(previews)
+-- Parse a TSV body (one record per line, fields separated by \t):
+-- id \t device_id \t created_at \t source_app_name \t truncated(0|1) \t preview_line
+-- string.gmatch in Lua beats hs.json.decode on nested tables by ~10x
+-- because there are no per-row table allocations for metadata.
+local function parseTsv(body)
     local choices = {}
-    if not previews then return choices end
-    for i = 1, #previews do
-        local c = previewToChoice(previews[i])
-        if c then choices[#choices + 1] = c end
+    if not body or body == "" then return choices end
+    for line in body:gmatch("([^\n]+)") do
+        local id, dev, created, app, trunc, preview =
+            line:match("^([^\t]*)\t([^\t]*)\t([^\t]*)\t([^\t]*)\t([^\t]*)\t(.*)$")
+        if id and id ~= "" and preview and preview ~= "" then
+            local sub = {}
+            if app ~= "" then sub[#sub + 1] = app end
+            if dev ~= "" then sub[#sub + 1] = dev end
+            if created ~= "" then sub[#sub + 1] = created end
+            if trunc == "1" then sub[#sub + 1] = "…truncated" end
+            choices[#choices + 1] = {
+                uuid = id,
+                text = preview,
+                plugin = obj.__name,
+                type = "copy",
+                subText = table.concat(sub, " · "),
+            }
+        end
     end
     return choices
 end
 
 local function fetchHistory(limit)
-    local resp = socketCall({
+    local body = socketSend({
         cmd = "history",
         limit = limit,
         preview_chars = obj.previewChars,
+        preview_format = "tsv",
     })
-    if not resp then return {} end
-    if resp.error then
-        print("seal_pasteboard: history error: " .. tostring(resp.error))
-        return {}
-    end
-    return previewsToChoices(resp.previews)
+    return parseTsv(body)
 end
 
 local function fetchSearch(query, limit)
-    local resp = socketCall({
+    local body = socketSend({
         cmd = "search",
         query = query,
         limit = limit,
         preview_chars = obj.previewChars,
+        preview_format = "tsv",
     })
-    if not resp then return {} end
-    if resp.error then
-        print("seal_pasteboard: search error: " .. tostring(resp.error))
-        return {}
-    end
-    return previewsToChoices(resp.previews)
+    return parseTsv(body)
 end
 
 local function fetchFull(id)
     if not id or id == "" then return nil end
-    local resp = socketCall({ cmd = "get_full", id = id })
+    local resp = socketJson({ cmd = "get_full", id = id })
     if not resp or resp.error or not resp.entry then return nil end
     return resp.entry.text_content
 end
