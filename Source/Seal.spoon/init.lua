@@ -219,11 +219,26 @@ function obj:sortChoices(choices, query)
     local HIGH_PRIORITY_THRESHOLD = 50000
     local query_lower = query and query:lower() or ""
 
+    -- For choices returned via a command keyword (e.g. "t ai1"), the
+    -- user-typed needle is the query *after* the keyword. Strip the
+    -- keyword before comparing so prefix matches against the choice text
+    -- actually fire — otherwise the leading "t " makes every choice a
+    -- non-prefix match and frecency dominates.
+    local function effectiveQuery(choice)
+        if query_lower == "" or not choice.keyword then return query_lower end
+        local prefix = choice.keyword:lower() .. " "
+        if query_lower:sub(1, #prefix) == prefix then
+            return (query_lower:sub(#prefix + 1):gsub("^%s+", ""))
+        end
+        return query_lower
+    end
+
     -- Helper: check if text starts with query (prefix match)
     local function isPrefixMatch(choice)
-        if query_lower == "" then return false end
+        local q = effectiveQuery(choice)
+        if q == "" then return false end
         local text = tostring(choice.text or "")
-        return text:lower():sub(1, #query_lower) == query_lower
+        return text:lower():sub(1, #q) == q
     end
 
     -- Helper: check if choice matches a pinned prefix for the current query
