@@ -13,7 +13,7 @@
         "doc": "Binds hotkeys for Seal\n\nParameters:\n * mapping - A table containing hotkey modifier/key details for the following (optional) items:\n  * show - This will cause Seal's UI to be shown\n  * toggle - This will cause Seal's UI to be shown or hidden depending on its current state\n\nReturns:\n * The Seal object",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "465",
+        "lineno": "480",
         "name": "bindHotkeys",
         "notes": [],
         "parameters": [
@@ -52,7 +52,7 @@
         "doc": "Clear all usage history (reset recency tracking)\n\nParameters:\n * None\n\nReturns:\n * The Seal object",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "339",
+        "lineno": "354",
         "name": "clearFrecencyData",
         "notes": [],
         "parameters": [
@@ -90,7 +90,7 @@
         "doc": "Loads a plugin from a given file\n\nParameters:\n * plugin_name - the name of the plugin, without \"seal_\" at the beginning or \".lua\" at the end\n * file - the file where the plugin code is stored.\n\nReturns:\n * The Seal object if the plugin was successfully loaded, `nil` otherwise\n\nNotes:\n * You should normally use `Seal:loadPlugins()`. This method allows you to load plugins\n   from non-standard locations and is mostly a development interface.\n * Some plugins may immediately begin doing background work (e.g. Spotlight searches)",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "399",
+        "lineno": "414",
         "name": "loadPluginFromFile",
         "notes": [
           " * You should normally use `Seal:loadPlugins()`. This method allows you to load plugins",
@@ -114,7 +114,7 @@
         "doc": "Loads a list of Seal plugins\n\nParameters:\n * plugins - A list containing the names of plugins to load\n\nReturns:\n * The Seal object\n\nNotes:\n * The plugins live inside the Seal.spoon directory\n * The plugin names in the list, should not have `seal_` at the start, or `.lua` at the end\n * Some plugins may immediately begin doing background work (e.g. Spotlight searches)",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "427",
+        "lineno": "442",
         "name": "loadPlugins",
         "notes": [
           " * The plugins live inside the Seal.spoon directory",
@@ -157,7 +157,7 @@
         "doc": "Refresh the list of commands provided by all the currently loaded plugins.\n\nParameters:\n * None\n\nReturns:\n * The Seal object\n\nNotes:\n * Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands.",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "380",
+        "lineno": "395",
         "name": "refreshAllCommands",
         "notes": [
           " * Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands."
@@ -178,7 +178,7 @@
         "doc": "Refresh the list of commands provided by the given plugin.\n\nParameters:\n * plugin_name - the name of the plugin. Should be the name as passed to `loadPlugins()` or `loadPluginFromFile`.\n\nReturns:\n * The Seal object\n\nNotes:\n * Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands.",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "355",
+        "lineno": "370",
         "name": "refreshCommandsForPlugin",
         "notes": [
           " * Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands."
@@ -218,7 +218,7 @@
         "doc": "Shows the Seal UI\n\nParameters:\n * query - An optional string to pre-populate the query box with\n\nReturns:\n * None\n\nNotes:\n * This may be useful if you wish to show Seal in response to something other than its hotkey",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "542",
+        "lineno": "557",
         "name": "show",
         "notes": [
           " * This may be useful if you wish to show Seal in response to something other than its hotkey"
@@ -239,7 +239,7 @@
         "doc": "Shows the Seal UI with clipboard history results directly (no command prefix)\n\nParameters:\n * None\n\nReturns:\n * The Seal object\n\nNotes:\n * This is useful for creating a dedicated hotkey to browse clipboard history\n * The search box will be empty but will filter clipboard items as you type",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "578",
+        "lineno": "593",
         "name": "showPasteboard",
         "notes": [
           " * This is useful for creating a dedicated hotkey to browse clipboard history",
@@ -290,7 +290,7 @@
         "doc": "Starts Seal\n\nParameters:\n * None\n\nReturns:\n * The Seal object",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "498",
+        "lineno": "513",
         "name": "start",
         "notes": [],
         "parameters": [
@@ -309,7 +309,7 @@
         "doc": "Stops Seal\n\nParameters:\n * None\n\nReturns:\n * The Seal object\n\nNotes:\n * Some Seal plugins will continue performing background work even after this call (e.g. Spotlight searches)",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "518",
+        "lineno": "533",
         "name": "stop",
         "notes": [
           " * Some Seal plugins will continue performing background work even after this call (e.g. Spotlight searches)"
@@ -330,7 +330,7 @@
         "doc": "Shows or hides the Seal UI\n\nParameters:\n * query - An optional string to pre-populate the query box with\n\nReturns:\n * None",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "560",
+        "lineno": "575",
         "name": "toggle",
         "notes": [],
         "parameters": [
@@ -434,7 +434,7 @@
         "doc": "Binds hotkeys for Seal\n\nParameters:\n * mapping - A table containing hotkey modifier/key details for the following (optional) items:\n  * show - This will cause Seal's UI to be shown\n  * toggle - This will cause Seal's UI to be shown or hidden depending on its current state\n\nReturns:\n * The Seal object",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "465",
+        "lineno": "480",
         "name": "bindHotkeys",
         "notes": [],
         "parameters": [
@@ -473,7 +473,7 @@
         "doc": "Clear all usage history (reset recency tracking)\n\nParameters:\n * None\n\nReturns:\n * The Seal object",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "339",
+        "lineno": "354",
         "name": "clearFrecencyData",
         "notes": [],
         "parameters": [
@@ -541,7 +541,7 @@
         "doc": "Loads a plugin from a given file\n\nParameters:\n * plugin_name - the name of the plugin, without \"seal_\" at the beginning or \".lua\" at the end\n * file - the file where the plugin code is stored.\n\nReturns:\n * The Seal object if the plugin was successfully loaded, `nil` otherwise\n\nNotes:\n * You should normally use `Seal:loadPlugins()`. This method allows you to load plugins\n   from non-standard locations and is mostly a development interface.\n * Some plugins may immediately begin doing background work (e.g. Spotlight searches)",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "399",
+        "lineno": "414",
         "name": "loadPluginFromFile",
         "notes": [
           " * You should normally use `Seal:loadPlugins()`. This method allows you to load plugins",
@@ -565,7 +565,7 @@
         "doc": "Loads a list of Seal plugins\n\nParameters:\n * plugins - A list containing the names of plugins to load\n\nReturns:\n * The Seal object\n\nNotes:\n * The plugins live inside the Seal.spoon directory\n * The plugin names in the list, should not have `seal_` at the start, or `.lua` at the end\n * Some plugins may immediately begin doing background work (e.g. Spotlight searches)",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "427",
+        "lineno": "442",
         "name": "loadPlugins",
         "notes": [
           " * The plugins live inside the Seal.spoon directory",
@@ -657,7 +657,7 @@
         "doc": "Refresh the list of commands provided by all the currently loaded plugins.\n\nParameters:\n * None\n\nReturns:\n * The Seal object\n\nNotes:\n * Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands.",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "380",
+        "lineno": "395",
         "name": "refreshAllCommands",
         "notes": [
           " * Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands."
@@ -678,7 +678,7 @@
         "doc": "Refresh the list of commands provided by the given plugin.\n\nParameters:\n * plugin_name - the name of the plugin. Should be the name as passed to `loadPlugins()` or `loadPluginFromFile`.\n\nReturns:\n * The Seal object\n\nNotes:\n * Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands.",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "355",
+        "lineno": "370",
         "name": "refreshCommandsForPlugin",
         "notes": [
           " * Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands."
@@ -718,7 +718,7 @@
         "doc": "Shows the Seal UI\n\nParameters:\n * query - An optional string to pre-populate the query box with\n\nReturns:\n * None\n\nNotes:\n * This may be useful if you wish to show Seal in response to something other than its hotkey",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "542",
+        "lineno": "557",
         "name": "show",
         "notes": [
           " * This may be useful if you wish to show Seal in response to something other than its hotkey"
@@ -739,7 +739,7 @@
         "doc": "Shows the Seal UI with clipboard history results directly (no command prefix)\n\nParameters:\n * None\n\nReturns:\n * The Seal object\n\nNotes:\n * This is useful for creating a dedicated hotkey to browse clipboard history\n * The search box will be empty but will filter clipboard items as you type",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "578",
+        "lineno": "593",
         "name": "showPasteboard",
         "notes": [
           " * This is useful for creating a dedicated hotkey to browse clipboard history",
@@ -790,7 +790,7 @@
         "doc": "Starts Seal\n\nParameters:\n * None\n\nReturns:\n * The Seal object",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "498",
+        "lineno": "513",
         "name": "start",
         "notes": [],
         "parameters": [
@@ -809,7 +809,7 @@
         "doc": "Stops Seal\n\nParameters:\n * None\n\nReturns:\n * The Seal object\n\nNotes:\n * Some Seal plugins will continue performing background work even after this call (e.g. Spotlight searches)",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "518",
+        "lineno": "533",
         "name": "stop",
         "notes": [
           " * Some Seal plugins will continue performing background work even after this call (e.g. Spotlight searches)"
@@ -830,7 +830,7 @@
         "doc": "Shows or hides the Seal UI\n\nParameters:\n * query - An optional string to pre-populate the query box with\n\nReturns:\n * None",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "560",
+        "lineno": "575",
         "name": "toggle",
         "notes": [],
         "parameters": [
@@ -1214,55 +1214,121 @@
     "Variable": [
       {
         "def": "Seal.plugins.pasteboard.historyLimit",
-        "desc": "",
-        "doc": "\nMax rows shown when opening the picker with an empty query.\nPreview-mode payload is ~500 B per row, so big numbers are cheap.",
+        "desc": "Max rows returned for an empty query (history view).",
+        "doc": "Max rows returned for an empty query (history view).",
         "file": "Source/Seal.spoon//seal_pasteboard.lua",
-        "lineno": "11",
+        "lineno": "13",
         "name": "historyLimit",
         "signature": "Seal.plugins.pasteboard.historyLimit",
-        "stripped_doc": "Max rows shown when opening the picker with an empty query.\nPreview-mode payload is ~500 B per row, so big numbers are cheap.",
+        "stripped_doc": "",
+        "type": "Variable"
+      },
+      {
+        "def": "Seal.plugins.pasteboard.nc",
+        "desc": "Path to a `nc`/`netcat` binary that supports `-U` (unix sockets).",
+        "doc": "Path to a `nc`/`netcat` binary that supports `-U` (unix sockets).",
+        "file": "Source/Seal.spoon//seal_pasteboard.lua",
+        "lineno": "34",
+        "name": "nc",
+        "signature": "Seal.plugins.pasteboard.nc",
+        "stripped_doc": "",
+        "type": "Variable"
+      },
+      {
+        "def": "Seal.plugins.pasteboard.previewChars",
+        "desc": "SUBSTR window for list rows; full text is fetched on paste.",
+        "doc": "SUBSTR window for list rows; full text is fetched on paste.",
+        "file": "Source/Seal.spoon//seal_pasteboard.lua",
+        "lineno": "23",
+        "name": "previewChars",
+        "signature": "Seal.plugins.pasteboard.previewChars",
+        "stripped_doc": "",
         "type": "Variable"
       },
       {
         "def": "Seal.plugins.pasteboard.searchLimit",
-        "desc": "",
-        "doc": "\nMax rows returned per live-search keystroke. Preview-mode responses\nare small enough that 5000 is snappy even on huge histories; the\nunderlying bottleneck is now hs.chooser render, not JSON size.",
+        "desc": "Max rows returned per keystroke for a non-empty query.",
+        "doc": "Max rows returned per keystroke for a non-empty query.",
         "file": "Source/Seal.spoon//seal_pasteboard.lua",
         "lineno": "18",
         "name": "searchLimit",
         "signature": "Seal.plugins.pasteboard.searchLimit",
-        "stripped_doc": "Max rows returned per live-search keystroke. Preview-mode responses\nare small enough that 5000 is snappy even on huge histories; the\nunderlying bottleneck is now hs.chooser render, not JSON size.",
+        "stripped_doc": "",
+        "type": "Variable"
+      },
+      {
+        "def": "Seal.plugins.pasteboard.socketPath",
+        "desc": "Unix socket the clipboard-cli sync daemon listens on.",
+        "doc": "Unix socket the clipboard-cli sync daemon listens on.",
+        "file": "Source/Seal.spoon//seal_pasteboard.lua",
+        "lineno": "28",
+        "name": "socketPath",
+        "signature": "Seal.plugins.pasteboard.socketPath",
+        "stripped_doc": "",
         "type": "Variable"
       }
     ],
-    "desc": "Clipboard history backed by the clipboard-cli sync daemon. Per-keystroke",
-    "doc": "Clipboard history backed by the clipboard-cli sync daemon. Per-keystroke\nlist responses carry only a short SUBSTR preview; full text is fetched\non selection via a separate socket round-trip, so payload size stays\nflat regardless of how large the underlying clipboard entries are.",
+    "desc": "Clipboard history backed by the clipboard-cli sync daemon.",
+    "doc": "Clipboard history backed by the clipboard-cli sync daemon.\n\nPer-keystroke list responses carry only a SUBSTR preview of each\nentry's text; full text is fetched on paste. All socket traffic\ngoes through `nc -U` via `io.popen` — no login shell, no\nclipboard-cli process startup, no hs.execute round-trip.",
     "items": [
       {
         "def": "Seal.plugins.pasteboard.historyLimit",
-        "desc": "",
-        "doc": "\nMax rows shown when opening the picker with an empty query.\nPreview-mode payload is ~500 B per row, so big numbers are cheap.",
+        "desc": "Max rows returned for an empty query (history view).",
+        "doc": "Max rows returned for an empty query (history view).",
         "file": "Source/Seal.spoon//seal_pasteboard.lua",
-        "lineno": "11",
+        "lineno": "13",
         "name": "historyLimit",
         "signature": "Seal.plugins.pasteboard.historyLimit",
-        "stripped_doc": "Max rows shown when opening the picker with an empty query.\nPreview-mode payload is ~500 B per row, so big numbers are cheap.",
+        "stripped_doc": "",
+        "type": "Variable"
+      },
+      {
+        "def": "Seal.plugins.pasteboard.nc",
+        "desc": "Path to a `nc`/`netcat` binary that supports `-U` (unix sockets).",
+        "doc": "Path to a `nc`/`netcat` binary that supports `-U` (unix sockets).",
+        "file": "Source/Seal.spoon//seal_pasteboard.lua",
+        "lineno": "34",
+        "name": "nc",
+        "signature": "Seal.plugins.pasteboard.nc",
+        "stripped_doc": "",
+        "type": "Variable"
+      },
+      {
+        "def": "Seal.plugins.pasteboard.previewChars",
+        "desc": "SUBSTR window for list rows; full text is fetched on paste.",
+        "doc": "SUBSTR window for list rows; full text is fetched on paste.",
+        "file": "Source/Seal.spoon//seal_pasteboard.lua",
+        "lineno": "23",
+        "name": "previewChars",
+        "signature": "Seal.plugins.pasteboard.previewChars",
+        "stripped_doc": "",
         "type": "Variable"
       },
       {
         "def": "Seal.plugins.pasteboard.searchLimit",
-        "desc": "",
-        "doc": "\nMax rows returned per live-search keystroke. Preview-mode responses\nare small enough that 5000 is snappy even on huge histories; the\nunderlying bottleneck is now hs.chooser render, not JSON size.",
+        "desc": "Max rows returned per keystroke for a non-empty query.",
+        "doc": "Max rows returned per keystroke for a non-empty query.",
         "file": "Source/Seal.spoon//seal_pasteboard.lua",
         "lineno": "18",
         "name": "searchLimit",
         "signature": "Seal.plugins.pasteboard.searchLimit",
-        "stripped_doc": "Max rows returned per live-search keystroke. Preview-mode responses\nare small enough that 5000 is snappy even on huge histories; the\nunderlying bottleneck is now hs.chooser render, not JSON size.",
+        "stripped_doc": "",
+        "type": "Variable"
+      },
+      {
+        "def": "Seal.plugins.pasteboard.socketPath",
+        "desc": "Unix socket the clipboard-cli sync daemon listens on.",
+        "doc": "Unix socket the clipboard-cli sync daemon listens on.",
+        "file": "Source/Seal.spoon//seal_pasteboard.lua",
+        "lineno": "28",
+        "name": "socketPath",
+        "signature": "Seal.plugins.pasteboard.socketPath",
+        "stripped_doc": "",
         "type": "Variable"
       }
     ],
     "name": "Seal.plugins.pasteboard",
-    "stripped_doc": "list responses carry only a short SUBSTR preview; full text is fetched\non selection via a separate socket round-trip, so payload size stays\nflat regardless of how large the underlying clipboard entries are.",
+    "stripped_doc": "\nPer-keystroke list responses carry only a SUBSTR preview of each\nentry's text; full text is fetched on paste. All socket traffic\ngoes through `nc -U` via `io.popen` — no login shell, no\nclipboard-cli process startup, no hs.execute round-trip.",
     "submodules": [],
     "type": "Module"
   },
