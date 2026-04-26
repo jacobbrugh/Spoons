@@ -10,20 +10,30 @@ local obj = {}
 obj.__index = obj
 obj.__name = "seal_pasteboard"
 
---- Seal.plugins.pasteboard.historyLimit — max rows on open.
+--- Seal.plugins.pasteboard.historyLimit
+--- Variable
+--- Max rows returned for an empty query (history view).
 obj.historyLimit = 500
 
---- Seal.plugins.pasteboard.searchLimit — max rows per keystroke.
+--- Seal.plugins.pasteboard.searchLimit
+--- Variable
+--- Max rows returned per keystroke for a non-empty query.
 obj.searchLimit = 500
 
---- Seal.plugins.pasteboard.previewChars — SUBSTR window for list rows.
+--- Seal.plugins.pasteboard.previewChars
+--- Variable
+--- SUBSTR window for list rows; full text is fetched on paste.
 obj.previewChars = 500
 
---- Seal.plugins.pasteboard.socketPath — Unix socket the sync daemon listens on.
+--- Seal.plugins.pasteboard.socketPath
+--- Variable
+--- Unix socket the clipboard-cli sync daemon listens on.
 obj.socketPath = (os.getenv("HOME") or "") ..
     "/Library/Application Support/clipboard-sync/query.sock"
 
---- Seal.plugins.pasteboard.nc — path to a `nc`/`netcat` that supports `-U`.
+--- Seal.plugins.pasteboard.nc
+--- Variable
+--- Path to a `nc`/`netcat` binary that supports `-U` (unix sockets).
 obj.nc = "/usr/bin/nc"
 
 function obj:commands()
