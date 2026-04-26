@@ -15,10 +15,11 @@
   <body>
     <header>
       <h1><a href="./index.html">docs</a> &raquo; Seal.plugins.pasteboard</h1>
-      <p>Clipboard history backed by the clipboard-cli sync daemon. Per-keystroke
-list responses carry only a short SUBSTR preview; full text is fetched
-on selection via a separate socket round-trip, so payload size stays
-flat regardless of how large the underlying clipboard entries are.</p>
+      <p>Clipboard history backed by the clipboard-cli sync daemon.</p>
+<p>Per-keystroke list responses carry only a SUBSTR preview of each
+entry's text; full text is fetched on paste. All socket traffic
+goes through <code>nc -U</code> via <code>io.popen</code> — no login shell, no
+clipboard-cli process startup, no hs.execute round-trip.</p>
 
       </header>
       <h3>API Overview</h3>
@@ -26,7 +27,10 @@ flat regardless of how large the underlying clipboard entries are.</p>
         <li>Variables - Configurable values</li>
           <ul>
             <li><a href="#historyLimit">historyLimit</a></li>
+            <li><a href="#nc">nc</a></li>
+            <li><a href="#previewChars">previewChars</a></li>
             <li><a href="#searchLimit">searchLimit</a></li>
+            <li><a href="#socketPath">socketPath</a></li>
           </ul>
       </ul>
       <h3>API Documentation</h3>
@@ -45,11 +49,58 @@ flat regardless of how large the underlying clipboard entries are.</p>
               </tr>
               <tr>
                 <th>Description</th>
-                <td></td>
+                <td><p>Max rows returned for an empty query (history view).</p>
+</td>
               </tr>
               <tr>
                 <th>Source</th>
-                <td><a href="https://github.com/Hammerspoon/Spoons/blob/master/Source/Seal.spoon/seal_pasteboard.lua#L11">Source/Seal.spoon/seal_pasteboard.lua line 11</a></td>
+                <td><a href="https://github.com/Hammerspoon/Spoons/blob/master/Source/Seal.spoon/seal_pasteboard.lua#L13">Source/Seal.spoon/seal_pasteboard.lua line 13</a></td>
+              </tr>
+            </table>
+          </section>
+          <section id="nc">
+            <a name="//apple_ref/cpp/Variable/nc" class="dashAnchor"></a>
+            <h5><a href="#nc">nc</a></h5>
+            <table>
+              <tr>
+                <th>Signature</th>
+                <td><code>Seal.plugins.pasteboard.nc</code></td>
+              </tr>
+              <tr>
+                <th>Type</th>
+                <td>Variable</td>
+              </tr>
+              <tr>
+                <th>Description</th>
+                <td><p>Path to a <code>nc</code>/<code>netcat</code> binary that supports <code>-U</code> (unix sockets).</p>
+</td>
+              </tr>
+              <tr>
+                <th>Source</th>
+                <td><a href="https://github.com/Hammerspoon/Spoons/blob/master/Source/Seal.spoon/seal_pasteboard.lua#L34">Source/Seal.spoon/seal_pasteboard.lua line 34</a></td>
+              </tr>
+            </table>
+          </section>
+          <section id="previewChars">
+            <a name="//apple_ref/cpp/Variable/previewChars" class="dashAnchor"></a>
+            <h5><a href="#previewChars">previewChars</a></h5>
+            <table>
+              <tr>
+                <th>Signature</th>
+                <td><code>Seal.plugins.pasteboard.previewChars</code></td>
+              </tr>
+              <tr>
+                <th>Type</th>
+                <td>Variable</td>
+              </tr>
+              <tr>
+                <th>Description</th>
+                <td><p>SUBSTR window for list rows; full text is fetched on paste.</p>
+</td>
+              </tr>
+              <tr>
+                <th>Source</th>
+                <td><a href="https://github.com/Hammerspoon/Spoons/blob/master/Source/Seal.spoon/seal_pasteboard.lua#L23">Source/Seal.spoon/seal_pasteboard.lua line 23</a></td>
               </tr>
             </table>
           </section>
@@ -67,11 +118,35 @@ flat regardless of how large the underlying clipboard entries are.</p>
               </tr>
               <tr>
                 <th>Description</th>
-                <td></td>
+                <td><p>Max rows returned per keystroke for a non-empty query.</p>
+</td>
               </tr>
               <tr>
                 <th>Source</th>
                 <td><a href="https://github.com/Hammerspoon/Spoons/blob/master/Source/Seal.spoon/seal_pasteboard.lua#L18">Source/Seal.spoon/seal_pasteboard.lua line 18</a></td>
+              </tr>
+            </table>
+          </section>
+          <section id="socketPath">
+            <a name="//apple_ref/cpp/Variable/socketPath" class="dashAnchor"></a>
+            <h5><a href="#socketPath">socketPath</a></h5>
+            <table>
+              <tr>
+                <th>Signature</th>
+                <td><code>Seal.plugins.pasteboard.socketPath</code></td>
+              </tr>
+              <tr>
+                <th>Type</th>
+                <td>Variable</td>
+              </tr>
+              <tr>
+                <th>Description</th>
+                <td><p>Unix socket the clipboard-cli sync daemon listens on.</p>
+</td>
+              </tr>
+              <tr>
+                <th>Source</th>
+                <td><a href="https://github.com/Hammerspoon/Spoons/blob/master/Source/Seal.spoon/seal_pasteboard.lua#L28">Source/Seal.spoon/seal_pasteboard.lua line 28</a></td>
               </tr>
             </table>
           </section>

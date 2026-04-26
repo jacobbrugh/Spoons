@@ -2831,20 +2831,38 @@
     "type": "Variable"
   },
   {
-    "desc": "Clipboard history backed by the clipboard-cli sync daemon. Per-keystroke",
+    "desc": "Clipboard history backed by the clipboard-cli sync daemon.",
     "name": "Seal.plugins.pasteboard",
     "type": "Module"
   },
   {
-    "desc": "",
+    "desc": "Max rows returned for an empty query (history view).",
     "module": "Seal.plugins.pasteboard",
     "name": "historyLimit",
     "type": "Variable"
   },
   {
-    "desc": "",
+    "desc": "Path to a `nc`/`netcat` binary that supports `-U` (unix sockets).",
+    "module": "Seal.plugins.pasteboard",
+    "name": "nc",
+    "type": "Variable"
+  },
+  {
+    "desc": "SUBSTR window for list rows; full text is fetched on paste.",
+    "module": "Seal.plugins.pasteboard",
+    "name": "previewChars",
+    "type": "Variable"
+  },
+  {
+    "desc": "Max rows returned per keystroke for a non-empty query.",
     "module": "Seal.plugins.pasteboard",
     "name": "searchLimit",
+    "type": "Variable"
+  },
+  {
+    "desc": "Unix socket the clipboard-cli sync daemon listens on.",
+    "module": "Seal.plugins.pasteboard",
+    "name": "socketPath",
     "type": "Variable"
   },
   {
