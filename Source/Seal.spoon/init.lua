@@ -87,19 +87,27 @@ obj.frecency_db_path = os.getenv("HOME") .. "/.local/share/hammerspoon/seal.db"
 obj.pinnedPrefixes = {}
 
 -- SQLite is the only source of truth. Every frecency read and write
--- forks /usr/bin/sqlite3 with SQL on stdin via hs.task. No in-memory
--- table is held — `obj.frecency_data` does not exist.
+-- forks /usr/bin/sqlite3 via hs.execute. No in-memory table is held —
+-- `obj.frecency_data` does not exist.
+--
+-- Why hs.execute and not hs.task: hs.task:waitUntilExit() spins the
+-- Hammerspoon main runloop while blocking, which lets concurrent hs.ipc
+-- requests (e.g. the out-of-process console log shipper polling every
+-- 5s) recurse into Lua mid-Seal-load and hit hs.ipc's 5-level recursion
+-- guard. hs.execute uses io.popen (synchronous, no runloop spin) so
+-- nothing else runs during the read. SQL goes on argv, not stdin —
+-- avoids the closely related "setInput doesn't close stdin" gotcha that
+-- left orphan sqlite3 children waiting for EOF.
+
 local function sql_escape(s) return "'" .. tostring(s):gsub("'", "''") .. "'" end
 
+local function sh_quote(s) return "'" .. tostring(s):gsub("'", "'\\''") .. "'" end
+
 local function sqlite_run(db, sql)
-    local rc_out, stdout_out = -1, ""
-    local task = hs.task.new("/usr/bin/sqlite3", function(rc, stdout, _stderr)
-        rc_out, stdout_out = rc, stdout or ""
-    end, { db })
-    task:setInput(sql)
-    task:start()
-    task:waitUntilExit()
-    return rc_out, stdout_out
+    local cmd = "/usr/bin/sqlite3 " .. sh_quote(db) .. " " .. sh_quote(sql) .. " 2>/dev/null"
+    local out, ok = hs.execute(cmd, false)
+    if not ok then return -1, "" end
+    return 0, out or ""
 end
 
 local function ensure_frecency_db(self)
