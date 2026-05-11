@@ -18138,7 +18138,7 @@
         "doc_gfm": "<p>Binds hotkeys for Seal</p>\n<p>Parameters:</p>\n<ul>\n<li>mapping - A table containing hotkey modifier/key details for the following (optional) items:</li>\n<li>show - This will cause Seal's UI to be shown</li>\n<li>toggle - This will cause Seal's UI to be shown or hidden depending on its current state</li>\n</ul>\n<p>Returns:</p>\n<ul>\n<li>The Seal object</li>\n</ul>\n",
         "examples": [],
         "file": "Source/Seal.spoon/init.lua",
-        "lineno": "472",
+        "lineno": "480",
         "name": "bindHotkeys",
         "notes": [],
         "notes_gfm": "",
@@ -18163,7 +18163,7 @@
         "doc_gfm": "<p>Calculate the recency score for a given item</p>\n<p>Parameters:</p>\n<ul>\n<li>uuid - The unique identifier of the item</li>\n<li>query - The current query string (unused, kept for API compatibility)</li>\n</ul>\n<p>Returns:</p>\n<ul>\n<li>The last_used timestamp (number), or 0 if no history exists</li>\n</ul>\n",
         "examples": [],
         "file": "Source/Seal.spoon/init.lua",
-        "lineno": "155",
+        "lineno": "163",
         "name": "calculateFrecencyScore",
         "notes": [],
         "notes_gfm": "",
@@ -18189,7 +18189,7 @@
         "doc_gfm": "<p>Clear all usage history (reset recency tracking)</p>\n<p>Parameters:</p>\n<ul>\n<li>None</li>\n</ul>\n<p>Returns:</p>\n<ul>\n<li>The Seal object</li>\n</ul>\n",
         "examples": [],
         "file": "Source/Seal.spoon/init.lua",
-        "lineno": "347",
+        "lineno": "355",
         "name": "clearFrecencyData",
         "notes": [],
         "notes_gfm": "",
@@ -18214,7 +18214,7 @@
         "doc_gfm": "<p>Ensure the frecency SQLite schema exists.</p>\n<p>Parameters:</p>\n<ul>\n<li>None</li>\n</ul>\n<p>Returns:</p>\n<ul>\n<li>The Seal object</li>\n</ul>\n<p>Notes:</p>\n<ul>\n<li>Does not load any rows into memory; the SQLite database is the\nsingle source of truth and every read hits it directly.</li>\n</ul>\n",
         "examples": [],
         "file": "Source/Seal.spoon/init.lua",
-        "lineno": "116",
+        "lineno": "124",
         "name": "loadFrecencyData",
         "notes": [
           " * Does not load any rows into memory; the SQLite database is the",
@@ -18242,7 +18242,7 @@
         "doc_gfm": "<p>Loads a plugin from a given file</p>\n<p>Parameters:</p>\n<ul>\n<li>plugin_name - the name of the plugin, without &quot;seal_&quot; at the beginning or &quot;.lua&quot; at the end</li>\n<li>file - the file where the plugin code is stored.</li>\n</ul>\n<p>Returns:</p>\n<ul>\n<li>The Seal object if the plugin was successfully loaded, <code>nil</code> otherwise</li>\n</ul>\n<p>Notes:</p>\n<ul>\n<li>You should normally use <code>Seal:loadPlugins()</code>. This method allows you to load plugins\nfrom non-standard locations and is mostly a development interface.</li>\n<li>Some plugins may immediately begin doing background work (e.g. Spotlight searches)</li>\n</ul>\n",
         "examples": [],
         "file": "Source/Seal.spoon/init.lua",
-        "lineno": "406",
+        "lineno": "414",
         "name": "loadPluginFromFile",
         "notes": [
           " * You should normally use `Seal:loadPlugins()`. This method allows you to load plugins",
@@ -18272,7 +18272,7 @@
         "doc_gfm": "<p>Loads a list of Seal plugins</p>\n<p>Parameters:</p>\n<ul>\n<li>plugins - A list containing the names of plugins to load</li>\n</ul>\n<p>Returns:</p>\n<ul>\n<li>The Seal object</li>\n</ul>\n<p>Notes:</p>\n<ul>\n<li>The plugins live inside the Seal.spoon directory</li>\n<li>The plugin names in the list, should not have <code>seal_</code> at the start, or <code>.lua</code> at the end</li>\n<li>Some plugins may immediately begin doing background work (e.g. Spotlight searches)</li>\n</ul>\n",
         "examples": [],
         "file": "Source/Seal.spoon/init.lua",
-        "lineno": "434",
+        "lineno": "442",
         "name": "loadPlugins",
         "notes": [
           " * The plugins live inside the Seal.spoon directory",
@@ -18301,7 +18301,7 @@
         "doc_gfm": "<p>Record a selection in the frecency database</p>\n<p>Parameters:</p>\n<ul>\n<li>query - The query string used when the selection was made (currently unused, kept for API compatibility)</li>\n<li>uuid - The unique identifier of the selected item</li>\n</ul>\n<p>Returns:</p>\n<ul>\n<li>The Seal object</li>\n</ul>\n",
         "examples": [],
         "file": "Source/Seal.spoon/init.lua",
-        "lineno": "134",
+        "lineno": "142",
         "name": "recordSelection",
         "notes": [],
         "notes_gfm": "",
@@ -18327,7 +18327,7 @@
         "doc_gfm": "<p>Refresh the list of commands provided by all the currently loaded plugins.</p>\n<p>Parameters:</p>\n<ul>\n<li>None</li>\n</ul>\n<p>Returns:</p>\n<ul>\n<li>The Seal object</li>\n</ul>\n<p>Notes:</p>\n<ul>\n<li>Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands.</li>\n</ul>\n",
         "examples": [],
         "file": "Source/Seal.spoon/init.lua",
-        "lineno": "387",
+        "lineno": "395",
         "name": "refreshAllCommands",
         "notes": [
           " * Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands."
@@ -18354,7 +18354,7 @@
         "doc_gfm": "<p>Refresh the list of commands provided by the given plugin.</p>\n<p>Parameters:</p>\n<ul>\n<li>plugin_name - the name of the plugin. Should be the name as passed to <code>loadPlugins()</code> or <code>loadPluginFromFile</code>.</li>\n</ul>\n<p>Returns:</p>\n<ul>\n<li>The Seal object</li>\n</ul>\n<p>Notes:</p>\n<ul>\n<li>Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands.</li>\n</ul>\n",
         "examples": [],
         "file": "Source/Seal.spoon/init.lua",
-        "lineno": "362",
+        "lineno": "370",
         "name": "refreshCommandsForPlugin",
         "notes": [
           " * Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands."
@@ -18381,7 +18381,7 @@
         "doc_gfm": "<p>Shows the Seal UI</p>\n<p>Parameters:</p>\n<ul>\n<li>query - An optional string to pre-populate the query box with</li>\n</ul>\n<p>Returns:</p>\n<ul>\n<li>None</li>\n</ul>\n<p>Notes:</p>\n<ul>\n<li>This may be useful if you wish to show Seal in response to something other than its hotkey</li>\n</ul>\n",
         "examples": [],
         "file": "Source/Seal.spoon/init.lua",
-        "lineno": "549",
+        "lineno": "557",
         "name": "show",
         "notes": [
           " * This may be useful if you wish to show Seal in response to something other than its hotkey"
@@ -18408,7 +18408,7 @@
         "doc_gfm": "<p>Shows the Seal UI with clipboard history results directly (no command prefix)</p>\n<p>Parameters:</p>\n<ul>\n<li>None</li>\n</ul>\n<p>Returns:</p>\n<ul>\n<li>The Seal object</li>\n</ul>\n<p>Notes:</p>\n<ul>\n<li>This is useful for creating a dedicated hotkey to browse clipboard history</li>\n<li>The search box will be empty but will filter clipboard items as you type</li>\n</ul>\n",
         "examples": [],
         "file": "Source/Seal.spoon/init.lua",
-        "lineno": "585",
+        "lineno": "593",
         "name": "showPasteboard",
         "notes": [
           " * This is useful for creating a dedicated hotkey to browse clipboard history",
@@ -18436,7 +18436,7 @@
         "doc_gfm": "<p>Sort choices using multi-level ranking with explicit precedence</p>\n<p>Parameters:</p>\n<ul>\n<li>choices - A table of choice items</li>\n<li>query - The current query string (used for prefix matching)</li>\n</ul>\n<p>Returns:</p>\n<ul>\n<li>The sorted choices table</li>\n</ul>\n<p>Notes:</p>\n<ul>\n<li>Ranking dimensions in order of precedence:<ol>\n<li>Priority tier - High-priority plugins (score &gt;= 50000) always win</li>\n<li>Pinned/Provider prefix - Results matching pinnedPrefixes OR urlformat provider prefixes</li>\n<li>Prefix match - Items starting with query beat substring matches</li>\n<li>Frecency - Previously selected items ranked by most recent use</li>\n<li>Alphabetical - Final tiebreaker for consistent ordering</li>\n</ol>\n</li>\n<li>To add new ranking dimensions, insert a comparison block at the\nappropriate precedence level in the sort comparator</li>\n</ul>\n",
         "examples": [],
         "file": "Source/Seal.spoon/init.lua",
-        "lineno": "173",
+        "lineno": "181",
         "name": "sortChoices",
         "notes": [
           " * Ranking dimensions in order of precedence:",
@@ -18471,7 +18471,7 @@
         "doc_gfm": "<p>Starts Seal</p>\n<p>Parameters:</p>\n<ul>\n<li>None</li>\n</ul>\n<p>Returns:</p>\n<ul>\n<li>The Seal object</li>\n</ul>\n",
         "examples": [],
         "file": "Source/Seal.spoon/init.lua",
-        "lineno": "505",
+        "lineno": "513",
         "name": "start",
         "notes": [],
         "notes_gfm": "",
@@ -18496,7 +18496,7 @@
         "doc_gfm": "<p>Stops Seal</p>\n<p>Parameters:</p>\n<ul>\n<li>None</li>\n</ul>\n<p>Returns:</p>\n<ul>\n<li>The Seal object</li>\n</ul>\n<p>Notes:</p>\n<ul>\n<li>Some Seal plugins will continue performing background work even after this call (e.g. Spotlight searches)</li>\n</ul>\n",
         "examples": [],
         "file": "Source/Seal.spoon/init.lua",
-        "lineno": "525",
+        "lineno": "533",
         "name": "stop",
         "notes": [
           " * Some Seal plugins will continue performing background work even after this call (e.g. Spotlight searches)"
@@ -18523,7 +18523,7 @@
         "doc_gfm": "<p>Shows or hides the Seal UI</p>\n<p>Parameters:</p>\n<ul>\n<li>query - An optional string to pre-populate the query box with</li>\n</ul>\n<p>Returns:</p>\n<ul>\n<li>None</li>\n</ul>\n",
         "examples": [],
         "file": "Source/Seal.spoon/init.lua",
-        "lineno": "567",
+        "lineno": "575",
         "name": "toggle",
         "notes": [],
         "notes_gfm": "",
@@ -18656,7 +18656,7 @@
         "doc_gfm": "<p>Binds hotkeys for Seal</p>\n<p>Parameters:</p>\n<ul>\n<li>mapping - A table containing hotkey modifier/key details for the following (optional) items:</li>\n<li>show - This will cause Seal's UI to be shown</li>\n<li>toggle - This will cause Seal's UI to be shown or hidden depending on its current state</li>\n</ul>\n<p>Returns:</p>\n<ul>\n<li>The Seal object</li>\n</ul>\n",
         "examples": [],
         "file": "Source/Seal.spoon/init.lua",
-        "lineno": "472",
+        "lineno": "480",
         "name": "bindHotkeys",
         "notes": [],
         "notes_gfm": "",
@@ -18681,7 +18681,7 @@
         "doc_gfm": "<p>Calculate the recency score for a given item</p>\n<p>Parameters:</p>\n<ul>\n<li>uuid - The unique identifier of the item</li>\n<li>query - The current query string (unused, kept for API compatibility)</li>\n</ul>\n<p>Returns:</p>\n<ul>\n<li>The last_used timestamp (number), or 0 if no history exists</li>\n</ul>\n",
         "examples": [],
         "file": "Source/Seal.spoon/init.lua",
-        "lineno": "155",
+        "lineno": "163",
         "name": "calculateFrecencyScore",
         "notes": [],
         "notes_gfm": "",
@@ -18707,7 +18707,7 @@
         "doc_gfm": "<p>Clear all usage history (reset recency tracking)</p>\n<p>Parameters:</p>\n<ul>\n<li>None</li>\n</ul>\n<p>Returns:</p>\n<ul>\n<li>The Seal object</li>\n</ul>\n",
         "examples": [],
         "file": "Source/Seal.spoon/init.lua",
-        "lineno": "347",
+        "lineno": "355",
         "name": "clearFrecencyData",
         "notes": [],
         "notes_gfm": "",
@@ -18772,7 +18772,7 @@
         "doc_gfm": "<p>Ensure the frecency SQLite schema exists.</p>\n<p>Parameters:</p>\n<ul>\n<li>None</li>\n</ul>\n<p>Returns:</p>\n<ul>\n<li>The Seal object</li>\n</ul>\n<p>Notes:</p>\n<ul>\n<li>Does not load any rows into memory; the SQLite database is the\nsingle source of truth and every read hits it directly.</li>\n</ul>\n",
         "examples": [],
         "file": "Source/Seal.spoon/init.lua",
-        "lineno": "116",
+        "lineno": "124",
         "name": "loadFrecencyData",
         "notes": [
           " * Does not load any rows into memory; the SQLite database is the",
@@ -18800,7 +18800,7 @@
         "doc_gfm": "<p>Loads a plugin from a given file</p>\n<p>Parameters:</p>\n<ul>\n<li>plugin_name - the name of the plugin, without &quot;seal_&quot; at the beginning or &quot;.lua&quot; at the end</li>\n<li>file - the file where the plugin code is stored.</li>\n</ul>\n<p>Returns:</p>\n<ul>\n<li>The Seal object if the plugin was successfully loaded, <code>nil</code> otherwise</li>\n</ul>\n<p>Notes:</p>\n<ul>\n<li>You should normally use <code>Seal:loadPlugins()</code>. This method allows you to load plugins\nfrom non-standard locations and is mostly a development interface.</li>\n<li>Some plugins may immediately begin doing background work (e.g. Spotlight searches)</li>\n</ul>\n",
         "examples": [],
         "file": "Source/Seal.spoon/init.lua",
-        "lineno": "406",
+        "lineno": "414",
         "name": "loadPluginFromFile",
         "notes": [
           " * You should normally use `Seal:loadPlugins()`. This method allows you to load plugins",
@@ -18830,7 +18830,7 @@
         "doc_gfm": "<p>Loads a list of Seal plugins</p>\n<p>Parameters:</p>\n<ul>\n<li>plugins - A list containing the names of plugins to load</li>\n</ul>\n<p>Returns:</p>\n<ul>\n<li>The Seal object</li>\n</ul>\n<p>Notes:</p>\n<ul>\n<li>The plugins live inside the Seal.spoon directory</li>\n<li>The plugin names in the list, should not have <code>seal_</code> at the start, or <code>.lua</code> at the end</li>\n<li>Some plugins may immediately begin doing background work (e.g. Spotlight searches)</li>\n</ul>\n",
         "examples": [],
         "file": "Source/Seal.spoon/init.lua",
-        "lineno": "434",
+        "lineno": "442",
         "name": "loadPlugins",
         "notes": [
           " * The plugins live inside the Seal.spoon directory",
@@ -18919,7 +18919,7 @@
         "doc_gfm": "<p>Record a selection in the frecency database</p>\n<p>Parameters:</p>\n<ul>\n<li>query - The query string used when the selection was made (currently unused, kept for API compatibility)</li>\n<li>uuid - The unique identifier of the selected item</li>\n</ul>\n<p>Returns:</p>\n<ul>\n<li>The Seal object</li>\n</ul>\n",
         "examples": [],
         "file": "Source/Seal.spoon/init.lua",
-        "lineno": "134",
+        "lineno": "142",
         "name": "recordSelection",
         "notes": [],
         "notes_gfm": "",
@@ -18945,7 +18945,7 @@
         "doc_gfm": "<p>Refresh the list of commands provided by all the currently loaded plugins.</p>\n<p>Parameters:</p>\n<ul>\n<li>None</li>\n</ul>\n<p>Returns:</p>\n<ul>\n<li>The Seal object</li>\n</ul>\n<p>Notes:</p>\n<ul>\n<li>Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands.</li>\n</ul>\n",
         "examples": [],
         "file": "Source/Seal.spoon/init.lua",
-        "lineno": "387",
+        "lineno": "395",
         "name": "refreshAllCommands",
         "notes": [
           " * Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands."
@@ -18972,7 +18972,7 @@
         "doc_gfm": "<p>Refresh the list of commands provided by the given plugin.</p>\n<p>Parameters:</p>\n<ul>\n<li>plugin_name - the name of the plugin. Should be the name as passed to <code>loadPlugins()</code> or <code>loadPluginFromFile</code>.</li>\n</ul>\n<p>Returns:</p>\n<ul>\n<li>The Seal object</li>\n</ul>\n<p>Notes:</p>\n<ul>\n<li>Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands.</li>\n</ul>\n",
         "examples": [],
         "file": "Source/Seal.spoon/init.lua",
-        "lineno": "362",
+        "lineno": "370",
         "name": "refreshCommandsForPlugin",
         "notes": [
           " * Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands."
@@ -18999,7 +18999,7 @@
         "doc_gfm": "<p>Shows the Seal UI</p>\n<p>Parameters:</p>\n<ul>\n<li>query - An optional string to pre-populate the query box with</li>\n</ul>\n<p>Returns:</p>\n<ul>\n<li>None</li>\n</ul>\n<p>Notes:</p>\n<ul>\n<li>This may be useful if you wish to show Seal in response to something other than its hotkey</li>\n</ul>\n",
         "examples": [],
         "file": "Source/Seal.spoon/init.lua",
-        "lineno": "549",
+        "lineno": "557",
         "name": "show",
         "notes": [
           " * This may be useful if you wish to show Seal in response to something other than its hotkey"
@@ -19026,7 +19026,7 @@
         "doc_gfm": "<p>Shows the Seal UI with clipboard history results directly (no command prefix)</p>\n<p>Parameters:</p>\n<ul>\n<li>None</li>\n</ul>\n<p>Returns:</p>\n<ul>\n<li>The Seal object</li>\n</ul>\n<p>Notes:</p>\n<ul>\n<li>This is useful for creating a dedicated hotkey to browse clipboard history</li>\n<li>The search box will be empty but will filter clipboard items as you type</li>\n</ul>\n",
         "examples": [],
         "file": "Source/Seal.spoon/init.lua",
-        "lineno": "585",
+        "lineno": "593",
         "name": "showPasteboard",
         "notes": [
           " * This is useful for creating a dedicated hotkey to browse clipboard history",
@@ -19054,7 +19054,7 @@
         "doc_gfm": "<p>Sort choices using multi-level ranking with explicit precedence</p>\n<p>Parameters:</p>\n<ul>\n<li>choices - A table of choice items</li>\n<li>query - The current query string (used for prefix matching)</li>\n</ul>\n<p>Returns:</p>\n<ul>\n<li>The sorted choices table</li>\n</ul>\n<p>Notes:</p>\n<ul>\n<li>Ranking dimensions in order of precedence:<ol>\n<li>Priority tier - High-priority plugins (score &gt;= 50000) always win</li>\n<li>Pinned/Provider prefix - Results matching pinnedPrefixes OR urlformat provider prefixes</li>\n<li>Prefix match - Items starting with query beat substring matches</li>\n<li>Frecency - Previously selected items ranked by most recent use</li>\n<li>Alphabetical - Final tiebreaker for consistent ordering</li>\n</ol>\n</li>\n<li>To add new ranking dimensions, insert a comparison block at the\nappropriate precedence level in the sort comparator</li>\n</ul>\n",
         "examples": [],
         "file": "Source/Seal.spoon/init.lua",
-        "lineno": "173",
+        "lineno": "181",
         "name": "sortChoices",
         "notes": [
           " * Ranking dimensions in order of precedence:",
@@ -19089,7 +19089,7 @@
         "doc_gfm": "<p>Starts Seal</p>\n<p>Parameters:</p>\n<ul>\n<li>None</li>\n</ul>\n<p>Returns:</p>\n<ul>\n<li>The Seal object</li>\n</ul>\n",
         "examples": [],
         "file": "Source/Seal.spoon/init.lua",
-        "lineno": "505",
+        "lineno": "513",
         "name": "start",
         "notes": [],
         "notes_gfm": "",
@@ -19114,7 +19114,7 @@
         "doc_gfm": "<p>Stops Seal</p>\n<p>Parameters:</p>\n<ul>\n<li>None</li>\n</ul>\n<p>Returns:</p>\n<ul>\n<li>The Seal object</li>\n</ul>\n<p>Notes:</p>\n<ul>\n<li>Some Seal plugins will continue performing background work even after this call (e.g. Spotlight searches)</li>\n</ul>\n",
         "examples": [],
         "file": "Source/Seal.spoon/init.lua",
-        "lineno": "525",
+        "lineno": "533",
         "name": "stop",
         "notes": [
           " * Some Seal plugins will continue performing background work even after this call (e.g. Spotlight searches)"
@@ -19141,7 +19141,7 @@
         "doc_gfm": "<p>Shows or hides the Seal UI</p>\n<p>Parameters:</p>\n<ul>\n<li>query - An optional string to pre-populate the query box with</li>\n</ul>\n<p>Returns:</p>\n<ul>\n<li>None</li>\n</ul>\n",
         "examples": [],
         "file": "Source/Seal.spoon/init.lua",
-        "lineno": "567",
+        "lineno": "575",
         "name": "toggle",
         "notes": [],
         "notes_gfm": "",
