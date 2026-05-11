@@ -2631,15 +2631,15 @@
     "type": "Module"
   },
   {
-    "desc": "Enable recency-based result ranking (results you've selected before will be prioritized by how recently you used them).",
+    "desc": "Path to the SQLite database where frecency data is stored",
     "module": "Seal",
-    "name": "frecency_enable",
+    "name": "frecency_db_path",
     "type": "Variable"
   },
   {
-    "desc": "Path to the JSON file where frecency data is stored",
+    "desc": "Enable recency-based result ranking (results you've selected before will be prioritized by how recently you used them).",
     "module": "Seal",
-    "name": "frecency_storage_path",
+    "name": "frecency_enable",
     "type": "Variable"
   },
   {
@@ -2679,7 +2679,7 @@
     "type": "Method"
   },
   {
-    "desc": "Load frecency data from disk",
+    "desc": "Ensure the frecency SQLite schema exists.",
     "module": "Seal",
     "name": "loadFrecencyData",
     "type": "Method"
@@ -2712,12 +2712,6 @@
     "desc": "Refresh the list of commands provided by the given plugin.",
     "module": "Seal",
     "name": "refreshCommandsForPlugin",
-    "type": "Method"
-  },
-  {
-    "desc": "Save frecency data to disk",
-    "module": "Seal",
-    "name": "saveFrecencyData",
     "type": "Method"
   },
   {

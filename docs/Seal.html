@@ -39,8 +39,8 @@
       <ul>
         <li>Variables - Configurable values</li>
           <ul>
+            <li><a href="#frecency_db_path">frecency_db_path</a></li>
             <li><a href="#frecency_enable">frecency_enable</a></li>
-            <li><a href="#frecency_storage_path">frecency_storage_path</a></li>
             <li><a href="#pinnedPrefixes">pinnedPrefixes</a></li>
             <li><a href="#plugin_search_paths">plugin_search_paths</a></li>
             <li><a href="#queryChangedTimerDuration">queryChangedTimerDuration</a></li>
@@ -56,7 +56,6 @@
             <li><a href="#recordSelection">recordSelection</a></li>
             <li><a href="#refreshAllCommands">refreshAllCommands</a></li>
             <li><a href="#refreshCommandsForPlugin">refreshCommandsForPlugin</a></li>
-            <li><a href="#saveFrecencyData">saveFrecencyData</a></li>
             <li><a href="#show">show</a></li>
             <li><a href="#showPasteboard">showPasteboard</a></li>
             <li><a href="#sortChoices">sortChoices</a></li>
@@ -67,6 +66,38 @@
       </ul>
       <h3>API Documentation</h3>
         <h4 class="documentation-section">Variables</h4>
+          <section id="frecency_db_path">
+            <a name="//apple_ref/cpp/Variable/frecency_db_path" class="dashAnchor"></a>
+            <h5><a href="#frecency_db_path">frecency_db_path</a></h5>
+            <table>
+              <tr>
+                <th>Signature</th>
+                <td><code>Seal.frecency_db_path</code></td>
+              </tr>
+              <tr>
+                <th>Type</th>
+                <td>Variable</td>
+              </tr>
+              <tr>
+                <th>Description</th>
+                <td><p>Path to the SQLite database where frecency data is stored</p>
+</td>
+              </tr>
+              <tr>
+                  <th>Notes</th>
+                  <td><ul>
+<li>Defaults to <code>~/.local/share/hammerspoon/seal.db</code></li>
+<li>SQLite is the only source of truth — Seal does not keep an
+in-memory copy of frecency data; every read and write hits the DB</li>
+</ul>
+</td>
+              </tr>
+              <tr>
+                <th>Source</th>
+                <td><a href="https://github.com/Hammerspoon/Spoons/blob/master/Source/Seal.spoon/init.lua#L61">Source/Seal.spoon/init.lua line 61</a></td>
+              </tr>
+            </table>
+          </section>
           <section id="frecency_enable">
             <a name="//apple_ref/cpp/Variable/frecency_enable" class="dashAnchor"></a>
             <h5><a href="#frecency_enable">frecency_enable</a></h5>
@@ -96,36 +127,6 @@
               <tr>
                 <th>Source</th>
                 <td><a href="https://github.com/Hammerspoon/Spoons/blob/master/Source/Seal.spoon/init.lua#L51">Source/Seal.spoon/init.lua line 51</a></td>
-              </tr>
-            </table>
-          </section>
-          <section id="frecency_storage_path">
-            <a name="//apple_ref/cpp/Variable/frecency_storage_path" class="dashAnchor"></a>
-            <h5><a href="#frecency_storage_path">frecency_storage_path</a></h5>
-            <table>
-              <tr>
-                <th>Signature</th>
-                <td><code>Seal.frecency_storage_path</code></td>
-              </tr>
-              <tr>
-                <th>Type</th>
-                <td>Variable</td>
-              </tr>
-              <tr>
-                <th>Description</th>
-                <td><p>Path to the JSON file where frecency data is stored</p>
-</td>
-              </tr>
-              <tr>
-                  <th>Notes</th>
-                  <td><ul>
-<li>Defaults to <code>~/.hammerspoon/seal_frecency.json</code></li>
-</ul>
-</td>
-              </tr>
-              <tr>
-                <th>Source</th>
-                <td><a href="https://github.com/Hammerspoon/Spoons/blob/master/Source/Seal.spoon/init.lua#L61">Source/Seal.spoon/init.lua line 61</a></td>
               </tr>
             </table>
           </section>
@@ -165,7 +166,7 @@
               </tr>
               <tr>
                 <th>Source</th>
-                <td><a href="https://github.com/Hammerspoon/Spoons/blob/master/Source/Seal.spoon/init.lua#L69">Source/Seal.spoon/init.lua line 69</a></td>
+                <td><a href="https://github.com/Hammerspoon/Spoons/blob/master/Source/Seal.spoon/init.lua#L71">Source/Seal.spoon/init.lua line 71</a></td>
               </tr>
             </table>
           </section>
@@ -260,7 +261,7 @@
               </tr>
               <tr>
                 <th>Source</th>
-                <td><a href="https://github.com/Hammerspoon/Spoons/blob/master/Source/Seal.spoon/init.lua#L480">Source/Seal.spoon/init.lua line 480</a></td>
+                <td><a href="https://github.com/Hammerspoon/Spoons/blob/master/Source/Seal.spoon/init.lua#L472">Source/Seal.spoon/init.lua line 472</a></td>
               </tr>
             </table>
           </section>
@@ -298,7 +299,7 @@
               </tr>
               <tr>
                 <th>Source</th>
-                <td><a href="https://github.com/Hammerspoon/Spoons/blob/master/Source/Seal.spoon/init.lua#L175">Source/Seal.spoon/init.lua line 175</a></td>
+                <td><a href="https://github.com/Hammerspoon/Spoons/blob/master/Source/Seal.spoon/init.lua#L155">Source/Seal.spoon/init.lua line 155</a></td>
               </tr>
             </table>
           </section>
@@ -335,7 +336,7 @@
               </tr>
               <tr>
                 <th>Source</th>
-                <td><a href="https://github.com/Hammerspoon/Spoons/blob/master/Source/Seal.spoon/init.lua#L354">Source/Seal.spoon/init.lua line 354</a></td>
+                <td><a href="https://github.com/Hammerspoon/Spoons/blob/master/Source/Seal.spoon/init.lua#L347">Source/Seal.spoon/init.lua line 347</a></td>
               </tr>
             </table>
           </section>
@@ -353,7 +354,7 @@
               </tr>
               <tr>
                 <th>Description</th>
-                <td><p>Load frecency data from disk</p>
+                <td><p>Ensure the frecency SQLite schema exists.</p>
 </td>
               </tr>
               <tr>
@@ -371,8 +372,16 @@
 </td>
               </tr>
               <tr>
+                  <th>Notes</th>
+                  <td><ul>
+<li>Does not load any rows into memory; the SQLite database is the
+single source of truth and every read hits it directly.</li>
+</ul>
+</td>
+              </tr>
+              <tr>
                 <th>Source</th>
-                <td><a href="https://github.com/Hammerspoon/Spoons/blob/master/Source/Seal.spoon/init.lua#L90">Source/Seal.spoon/init.lua line 90</a></td>
+                <td><a href="https://github.com/Hammerspoon/Spoons/blob/master/Source/Seal.spoon/init.lua#L116">Source/Seal.spoon/init.lua line 116</a></td>
               </tr>
             </table>
           </section>
@@ -419,7 +428,7 @@ from non-standard locations and is mostly a development interface.</li>
               </tr>
               <tr>
                 <th>Source</th>
-                <td><a href="https://github.com/Hammerspoon/Spoons/blob/master/Source/Seal.spoon/init.lua#L414">Source/Seal.spoon/init.lua line 414</a></td>
+                <td><a href="https://github.com/Hammerspoon/Spoons/blob/master/Source/Seal.spoon/init.lua#L406">Source/Seal.spoon/init.lua line 406</a></td>
               </tr>
             </table>
           </section>
@@ -465,7 +474,7 @@ from non-standard locations and is mostly a development interface.</li>
               </tr>
               <tr>
                 <th>Source</th>
-                <td><a href="https://github.com/Hammerspoon/Spoons/blob/master/Source/Seal.spoon/init.lua#L442">Source/Seal.spoon/init.lua line 442</a></td>
+                <td><a href="https://github.com/Hammerspoon/Spoons/blob/master/Source/Seal.spoon/init.lua#L434">Source/Seal.spoon/init.lua line 434</a></td>
               </tr>
             </table>
           </section>
@@ -503,7 +512,7 @@ from non-standard locations and is mostly a development interface.</li>
               </tr>
               <tr>
                 <th>Source</th>
-                <td><a href="https://github.com/Hammerspoon/Spoons/blob/master/Source/Seal.spoon/init.lua#L142">Source/Seal.spoon/init.lua line 142</a></td>
+                <td><a href="https://github.com/Hammerspoon/Spoons/blob/master/Source/Seal.spoon/init.lua#L134">Source/Seal.spoon/init.lua line 134</a></td>
               </tr>
             </table>
           </section>
@@ -547,7 +556,7 @@ from non-standard locations and is mostly a development interface.</li>
               </tr>
               <tr>
                 <th>Source</th>
-                <td><a href="https://github.com/Hammerspoon/Spoons/blob/master/Source/Seal.spoon/init.lua#L395">Source/Seal.spoon/init.lua line 395</a></td>
+                <td><a href="https://github.com/Hammerspoon/Spoons/blob/master/Source/Seal.spoon/init.lua#L387">Source/Seal.spoon/init.lua line 387</a></td>
               </tr>
             </table>
           </section>
@@ -591,44 +600,7 @@ from non-standard locations and is mostly a development interface.</li>
               </tr>
               <tr>
                 <th>Source</th>
-                <td><a href="https://github.com/Hammerspoon/Spoons/blob/master/Source/Seal.spoon/init.lua#L370">Source/Seal.spoon/init.lua line 370</a></td>
-              </tr>
-            </table>
-          </section>
-          <section id="saveFrecencyData">
-            <a name="//apple_ref/cpp/Method/saveFrecencyData" class="dashAnchor"></a>
-            <h5><a href="#saveFrecencyData">saveFrecencyData</a></h5>
-            <table>
-              <tr>
-                <th>Signature</th>
-                <td><code>Seal:saveFrecencyData()</code></td>
-              </tr>
-              <tr>
-                <th>Type</th>
-                <td>Method</td>
-              </tr>
-              <tr>
-                <th>Description</th>
-                <td><p>Save frecency data to disk</p>
-</td>
-              </tr>
-              <tr>
-                  <th>Parameters</th>
-                  <td><ul>
-<li>None</li>
-</ul>
-</td>
-              </tr>
-              <tr>
-                  <th>Returns</th>
-                  <td><ul>
-<li>The Seal object</li>
-</ul>
-</td>
-              </tr>
-              <tr>
-                <th>Source</th>
-                <td><a href="https://github.com/Hammerspoon/Spoons/blob/master/Source/Seal.spoon/init.lua#L117">Source/Seal.spoon/init.lua line 117</a></td>
+                <td><a href="https://github.com/Hammerspoon/Spoons/blob/master/Source/Seal.spoon/init.lua#L362">Source/Seal.spoon/init.lua line 362</a></td>
               </tr>
             </table>
           </section>
@@ -672,7 +644,7 @@ from non-standard locations and is mostly a development interface.</li>
               </tr>
               <tr>
                 <th>Source</th>
-                <td><a href="https://github.com/Hammerspoon/Spoons/blob/master/Source/Seal.spoon/init.lua#L557">Source/Seal.spoon/init.lua line 557</a></td>
+                <td><a href="https://github.com/Hammerspoon/Spoons/blob/master/Source/Seal.spoon/init.lua#L549">Source/Seal.spoon/init.lua line 549</a></td>
               </tr>
             </table>
           </section>
@@ -717,7 +689,7 @@ from non-standard locations and is mostly a development interface.</li>
               </tr>
               <tr>
                 <th>Source</th>
-                <td><a href="https://github.com/Hammerspoon/Spoons/blob/master/Source/Seal.spoon/init.lua#L593">Source/Seal.spoon/init.lua line 593</a></td>
+                <td><a href="https://github.com/Hammerspoon/Spoons/blob/master/Source/Seal.spoon/init.lua#L585">Source/Seal.spoon/init.lua line 585</a></td>
               </tr>
             </table>
           </section>
@@ -771,7 +743,7 @@ appropriate precedence level in the sort comparator</li>
               </tr>
               <tr>
                 <th>Source</th>
-                <td><a href="https://github.com/Hammerspoon/Spoons/blob/master/Source/Seal.spoon/init.lua#L198">Source/Seal.spoon/init.lua line 198</a></td>
+                <td><a href="https://github.com/Hammerspoon/Spoons/blob/master/Source/Seal.spoon/init.lua#L173">Source/Seal.spoon/init.lua line 173</a></td>
               </tr>
             </table>
           </section>
@@ -808,7 +780,7 @@ appropriate precedence level in the sort comparator</li>
               </tr>
               <tr>
                 <th>Source</th>
-                <td><a href="https://github.com/Hammerspoon/Spoons/blob/master/Source/Seal.spoon/init.lua#L513">Source/Seal.spoon/init.lua line 513</a></td>
+                <td><a href="https://github.com/Hammerspoon/Spoons/blob/master/Source/Seal.spoon/init.lua#L505">Source/Seal.spoon/init.lua line 505</a></td>
               </tr>
             </table>
           </section>
@@ -852,7 +824,7 @@ appropriate precedence level in the sort comparator</li>
               </tr>
               <tr>
                 <th>Source</th>
-                <td><a href="https://github.com/Hammerspoon/Spoons/blob/master/Source/Seal.spoon/init.lua#L533">Source/Seal.spoon/init.lua line 533</a></td>
+                <td><a href="https://github.com/Hammerspoon/Spoons/blob/master/Source/Seal.spoon/init.lua#L525">Source/Seal.spoon/init.lua line 525</a></td>
               </tr>
             </table>
           </section>
@@ -889,7 +861,7 @@ appropriate precedence level in the sort comparator</li>
               </tr>
               <tr>
                 <th>Source</th>
-                <td><a href="https://github.com/Hammerspoon/Spoons/blob/master/Source/Seal.spoon/init.lua#L575">Source/Seal.spoon/init.lua line 575</a></td>
+                <td><a href="https://github.com/Hammerspoon/Spoons/blob/master/Source/Seal.spoon/init.lua#L567">Source/Seal.spoon/init.lua line 567</a></td>
               </tr>
             </table>
           </section>
