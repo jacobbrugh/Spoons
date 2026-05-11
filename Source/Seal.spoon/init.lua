@@ -58,13 +58,15 @@ obj.plugin_search_paths = { hs.configdir .. "/seal_plugins", obj.spoonPath }
 ---  * Items you've selected before appear at the top, sorted by most recent first
 obj.frecency_enable = true
 
---- Seal.frecency_storage_path
+--- Seal.frecency_db_path
 --- Variable
---- Path to the JSON file where frecency data is stored
+--- Path to the SQLite database where frecency data is stored
 ---
 --- Notes:
----  * Defaults to `~/.hammerspoon/seal_frecency.json`
-obj.frecency_storage_path = hs.configdir .. "/seal_frecency.json"
+---  * Defaults to `~/.local/share/hammerspoon/seal.db`
+---  * SQLite is the only source of truth — Seal does not keep an
+---    in-memory copy of frecency data; every read and write hits the DB
+obj.frecency_db_path = os.getenv("HOME") .. "/.local/share/hammerspoon/seal.db"
 
 --- Seal.pinnedPrefixes
 --- Variable
@@ -84,58 +86,48 @@ obj.frecency_storage_path = hs.configdir .. "/seal_frecency.json"
 ---    ```
 obj.pinnedPrefixes = {}
 
--- Internal frecency data structure
-obj.frecency_data = {}
+-- SQLite is the only source of truth. Every frecency read and write
+-- forks /usr/bin/sqlite3 with SQL on stdin via hs.task. No in-memory
+-- table is held — `obj.frecency_data` does not exist.
+local function sql_escape(s) return "'" .. tostring(s):gsub("'", "''") .. "'" end
+
+local function sqlite_run(db, sql)
+    local rc_out, stdout_out = -1, ""
+    local task = hs.task.new("/usr/bin/sqlite3", function(rc, stdout, _stderr)
+        rc_out, stdout_out = rc, stdout or ""
+    end, { db })
+    task:setInput(sql)
+    task:start()
+    task:waitUntilExit()
+    return rc_out, stdout_out
+end
+
+local function ensure_frecency_db(self)
+    hs.fs.mkdir(os.getenv("HOME") .. "/.local/share/hammerspoon")
+    sqlite_run(self.frecency_db_path, [[
+        CREATE TABLE IF NOT EXISTS frecency (
+            uuid TEXT PRIMARY KEY NOT NULL,
+            count INTEGER NOT NULL DEFAULT 0,
+            last_used INTEGER NOT NULL DEFAULT 0
+        );
+    ]])
+end
 
 --- Seal:loadFrecencyData()
 --- Method
---- Load frecency data from disk
+--- Ensure the frecency SQLite schema exists.
 ---
 --- Parameters:
 ---  * None
 ---
 --- Returns:
 ---  * The Seal object
+---
+--- Notes:
+---  * Does not load any rows into memory; the SQLite database is the
+---    single source of truth and every read hits it directly.
 function obj:loadFrecencyData()
-    local file = io.open(self.frecency_storage_path, "r")
-    if file then
-        local content = file:read("*all")
-        file:close()
-        local success, data = pcall(hs.json.decode, content)
-        if success and data then
-            self.frecency_data = data
-        else
-            print("-- Seal: Failed to parse frecency data, starting fresh")
-            self.frecency_data = {}
-        end
-    else
-        self.frecency_data = {}
-    end
-    return self
-end
-
---- Seal:saveFrecencyData()
---- Method
---- Save frecency data to disk
----
---- Parameters:
----  * None
----
---- Returns:
----  * The Seal object
-function obj:saveFrecencyData()
-    local file = io.open(self.frecency_storage_path, "w")
-    if file then
-        local success, json = pcall(hs.json.encode, self.frecency_data)
-        if success and json then
-            file:write(json)
-            file:close()
-        else
-            print("-- Seal: Failed to encode frecency data")
-        end
-    else
-        print("-- Seal: Failed to open frecency file for writing: " .. self.frecency_storage_path)
-    end
+    ensure_frecency_db(self)
     return self
 end
 
@@ -153,22 +145,10 @@ function obj:recordSelection(query, uuid)
     if not self.frecency_enable or not uuid or uuid == "" then
         return self
     end
-
-    -- Initialize data structure if needed
-    if not self.frecency_data[uuid] then
-        self.frecency_data[uuid] = {
-            count = 0,
-            last_used = 0
-        }
-    end
-
-    -- Update usage data
-    self.frecency_data[uuid].count = self.frecency_data[uuid].count + 1
-    self.frecency_data[uuid].last_used = os.time()
-
-    -- Save to disk
-    self:saveFrecencyData()
-
+    local now = os.time()
+    sqlite_run(self.frecency_db_path,
+        ("INSERT INTO frecency (uuid, count, last_used) VALUES (%s, 1, %d) ON CONFLICT(uuid) DO UPDATE SET count = count + 1, last_used = %d;"):format(
+            sql_escape(uuid), now, now))
     return self
 end
 
@@ -183,16 +163,11 @@ end
 --- Returns:
 ---  * The last_used timestamp (number), or 0 if no history exists
 function obj:calculateFrecencyScore(uuid, query)
-    if not self.frecency_enable or not uuid then
-        return 0
-    end
-
-    if not self.frecency_data[uuid] then
-        return 0
-    end
-
-    -- Return the last_used timestamp directly for sorting by recency
-    return self.frecency_data[uuid].last_used or 0
+    if not self.frecency_enable or not uuid then return 0 end
+    local rc, out = sqlite_run(self.frecency_db_path,
+        ("SELECT last_used FROM frecency WHERE uuid = %s;"):format(sql_escape(uuid)))
+    if rc ~= 0 then return 0 end
+    return tonumber((out:gsub("%s+$", ""))) or 0
 end
 
 --- Seal:sortChoices(choices, query)
@@ -290,6 +265,28 @@ function obj:sortChoices(choices, query)
         return tostring(choice.text or ""):lower()
     end
 
+    -- Bulk-load frecency scores for the candidate set in a single SQL
+    -- query, then look up per choice in the loop below. `frecency_scores`
+    -- is scoped to this function call — nothing persists past return,
+    -- so the DB remains the only source of truth.
+    local frecency_scores = {}
+    if self.frecency_enable then
+        local uuid_lits = {}
+        for _, c in ipairs(choices) do
+            if c.uuid then uuid_lits[#uuid_lits + 1] = sql_escape(c.uuid) end
+        end
+        if #uuid_lits > 0 then
+            local rc, out = sqlite_run(self.frecency_db_path,
+                "SELECT uuid, last_used FROM frecency WHERE uuid IN (" .. table.concat(uuid_lits, ",") .. ");")
+            if rc == 0 then
+                for line in out:gmatch("[^\n]+") do
+                    local uuid, last = line:match("^(.-)|(%-?%d+)$")
+                    if uuid then frecency_scores[uuid] = tonumber(last) end
+                end
+            end
+        end
+    end
+
     -- Pre-compute ranking attributes for each choice
     for _, choice in ipairs(choices) do
         -- Priority tier (high priority = true)
@@ -302,11 +299,7 @@ function obj:sortChoices(choices, query)
         choice._urlformat_provider_match = isUrlFormatProviderMatch(choice)
 
         -- Frecency score (0 if never selected, timestamp if selected)
-        if self.frecency_enable and choice.uuid then
-            choice._frecency = self:calculateFrecencyScore(choice.uuid, query)
-        else
-            choice._frecency = 0
-        end
+        choice._frecency = (self.frecency_enable and choice.uuid and frecency_scores[choice.uuid]) or 0
 
         -- Prefix match
         choice._prefix_match = isPrefixMatch(choice)
@@ -361,8 +354,7 @@ end
 --- Returns:
 ---  * The Seal object
 function obj:clearFrecencyData()
-    self.frecency_data = {}
-    self:saveFrecencyData()
+    sqlite_run(self.frecency_db_path, "DELETE FROM frecency;")
     print("-- Seal: Usage history cleared")
     return self
 end
