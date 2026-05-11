@@ -13,7 +13,7 @@
         "doc": "Binds hotkeys for Seal\n\nParameters:\n * mapping - A table containing hotkey modifier/key details for the following (optional) items:\n  * show - This will cause Seal's UI to be shown\n  * toggle - This will cause Seal's UI to be shown or hidden depending on its current state\n\nReturns:\n * The Seal object",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "480",
+        "lineno": "472",
         "name": "bindHotkeys",
         "notes": [],
         "parameters": [
@@ -32,7 +32,7 @@
         "doc": "Calculate the recency score for a given item\n\nParameters:\n * uuid - The unique identifier of the item\n * query - The current query string (unused, kept for API compatibility)\n\nReturns:\n * The last_used timestamp (number), or 0 if no history exists",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "175",
+        "lineno": "155",
         "name": "calculateFrecencyScore",
         "notes": [],
         "parameters": [
@@ -52,7 +52,7 @@
         "doc": "Clear all usage history (reset recency tracking)\n\nParameters:\n * None\n\nReturns:\n * The Seal object",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "354",
+        "lineno": "347",
         "name": "clearFrecencyData",
         "notes": [],
         "parameters": [
@@ -67,13 +67,16 @@
       },
       {
         "def": "Seal:loadFrecencyData()",
-        "desc": "Load frecency data from disk",
-        "doc": "Load frecency data from disk\n\nParameters:\n * None\n\nReturns:\n * The Seal object",
+        "desc": "Ensure the frecency SQLite schema exists.",
+        "doc": "Ensure the frecency SQLite schema exists.\n\nParameters:\n * None\n\nReturns:\n * The Seal object\n\nNotes:\n * Does not load any rows into memory; the SQLite database is the\n   single source of truth and every read hits it directly.",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "90",
+        "lineno": "116",
         "name": "loadFrecencyData",
-        "notes": [],
+        "notes": [
+          " * Does not load any rows into memory; the SQLite database is the",
+          "   single source of truth and every read hits it directly."
+        ],
         "parameters": [
           " * None"
         ],
@@ -90,7 +93,7 @@
         "doc": "Loads a plugin from a given file\n\nParameters:\n * plugin_name - the name of the plugin, without \"seal_\" at the beginning or \".lua\" at the end\n * file - the file where the plugin code is stored.\n\nReturns:\n * The Seal object if the plugin was successfully loaded, `nil` otherwise\n\nNotes:\n * You should normally use `Seal:loadPlugins()`. This method allows you to load plugins\n   from non-standard locations and is mostly a development interface.\n * Some plugins may immediately begin doing background work (e.g. Spotlight searches)",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "414",
+        "lineno": "406",
         "name": "loadPluginFromFile",
         "notes": [
           " * You should normally use `Seal:loadPlugins()`. This method allows you to load plugins",
@@ -114,7 +117,7 @@
         "doc": "Loads a list of Seal plugins\n\nParameters:\n * plugins - A list containing the names of plugins to load\n\nReturns:\n * The Seal object\n\nNotes:\n * The plugins live inside the Seal.spoon directory\n * The plugin names in the list, should not have `seal_` at the start, or `.lua` at the end\n * Some plugins may immediately begin doing background work (e.g. Spotlight searches)",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "442",
+        "lineno": "434",
         "name": "loadPlugins",
         "notes": [
           " * The plugins live inside the Seal.spoon directory",
@@ -137,7 +140,7 @@
         "doc": "Record a selection in the frecency database\n\nParameters:\n * query - The query string used when the selection was made (currently unused, kept for API compatibility)\n * uuid - The unique identifier of the selected item\n\nReturns:\n * The Seal object",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "142",
+        "lineno": "134",
         "name": "recordSelection",
         "notes": [],
         "parameters": [
@@ -157,7 +160,7 @@
         "doc": "Refresh the list of commands provided by all the currently loaded plugins.\n\nParameters:\n * None\n\nReturns:\n * The Seal object\n\nNotes:\n * Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands.",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "395",
+        "lineno": "387",
         "name": "refreshAllCommands",
         "notes": [
           " * Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands."
@@ -178,7 +181,7 @@
         "doc": "Refresh the list of commands provided by the given plugin.\n\nParameters:\n * plugin_name - the name of the plugin. Should be the name as passed to `loadPlugins()` or `loadPluginFromFile`.\n\nReturns:\n * The Seal object\n\nNotes:\n * Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands.",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "370",
+        "lineno": "362",
         "name": "refreshCommandsForPlugin",
         "notes": [
           " * Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands."
@@ -194,31 +197,12 @@
         "type": "Method"
       },
       {
-        "def": "Seal:saveFrecencyData()",
-        "desc": "Save frecency data to disk",
-        "doc": "Save frecency data to disk\n\nParameters:\n * None\n\nReturns:\n * The Seal object",
-        "examples": [],
-        "file": "Source/Seal.spoon//init.lua",
-        "lineno": "117",
-        "name": "saveFrecencyData",
-        "notes": [],
-        "parameters": [
-          " * None"
-        ],
-        "returns": [
-          " * The Seal object"
-        ],
-        "signature": "Seal:saveFrecencyData()",
-        "stripped_doc": "",
-        "type": "Method"
-      },
-      {
         "def": "Seal:show(query)",
         "desc": "Shows the Seal UI",
         "doc": "Shows the Seal UI\n\nParameters:\n * query - An optional string to pre-populate the query box with\n\nReturns:\n * None\n\nNotes:\n * This may be useful if you wish to show Seal in response to something other than its hotkey",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "557",
+        "lineno": "549",
         "name": "show",
         "notes": [
           " * This may be useful if you wish to show Seal in response to something other than its hotkey"
@@ -239,7 +223,7 @@
         "doc": "Shows the Seal UI with clipboard history results directly (no command prefix)\n\nParameters:\n * None\n\nReturns:\n * The Seal object\n\nNotes:\n * This is useful for creating a dedicated hotkey to browse clipboard history\n * The search box will be empty but will filter clipboard items as you type",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "593",
+        "lineno": "585",
         "name": "showPasteboard",
         "notes": [
           " * This is useful for creating a dedicated hotkey to browse clipboard history",
@@ -261,7 +245,7 @@
         "doc": "Sort choices using multi-level ranking with explicit precedence\n\nParameters:\n * choices - A table of choice items\n * query - The current query string (used for prefix matching)\n\nReturns:\n * The sorted choices table\n\nNotes:\n * Ranking dimensions in order of precedence:\n   1. Priority tier - High-priority plugins (score >= 50000) always win\n   2. Pinned/Provider prefix - Results matching pinnedPrefixes OR urlformat provider prefixes\n   3. Prefix match - Items starting with query beat substring matches\n   4. Frecency - Previously selected items ranked by most recent use\n   5. Alphabetical - Final tiebreaker for consistent ordering\n * To add new ranking dimensions, insert a comparison block at the\n   appropriate precedence level in the sort comparator",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "198",
+        "lineno": "173",
         "name": "sortChoices",
         "notes": [
           " * Ranking dimensions in order of precedence:",
@@ -290,7 +274,7 @@
         "doc": "Starts Seal\n\nParameters:\n * None\n\nReturns:\n * The Seal object",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "513",
+        "lineno": "505",
         "name": "start",
         "notes": [],
         "parameters": [
@@ -309,7 +293,7 @@
         "doc": "Stops Seal\n\nParameters:\n * None\n\nReturns:\n * The Seal object\n\nNotes:\n * Some Seal plugins will continue performing background work even after this call (e.g. Spotlight searches)",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "533",
+        "lineno": "525",
         "name": "stop",
         "notes": [
           " * Some Seal plugins will continue performing background work even after this call (e.g. Spotlight searches)"
@@ -330,7 +314,7 @@
         "doc": "Shows or hides the Seal UI\n\nParameters:\n * query - An optional string to pre-populate the query box with\n\nReturns:\n * None",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "575",
+        "lineno": "567",
         "name": "toggle",
         "notes": [],
         "parameters": [
@@ -345,6 +329,22 @@
       }
     ],
     "Variable": [
+      {
+        "def": "Seal.frecency_db_path",
+        "desc": "Path to the SQLite database where frecency data is stored",
+        "doc": "Path to the SQLite database where frecency data is stored\n\nNotes:\n * Defaults to `~/.local/share/hammerspoon/seal.db`\n * SQLite is the only source of truth — Seal does not keep an\n   in-memory copy of frecency data; every read and write hits the DB",
+        "file": "Source/Seal.spoon//init.lua",
+        "lineno": "61",
+        "name": "frecency_db_path",
+        "notes": [
+          " * Defaults to `~/.local/share/hammerspoon/seal.db`",
+          " * SQLite is the only source of truth — Seal does not keep an",
+          "   in-memory copy of frecency data; every read and write hits the DB"
+        ],
+        "signature": "Seal.frecency_db_path",
+        "stripped_doc": "",
+        "type": "Variable"
+      },
       {
         "def": "Seal.frecency_enable",
         "desc": "Enable recency-based result ranking (results you've selected before will be prioritized by how recently you used them).",
@@ -362,25 +362,11 @@
         "type": "Variable"
       },
       {
-        "def": "Seal.frecency_storage_path",
-        "desc": "Path to the JSON file where frecency data is stored",
-        "doc": "Path to the JSON file where frecency data is stored\n\nNotes:\n * Defaults to `~/.hammerspoon/seal_frecency.json`",
-        "file": "Source/Seal.spoon//init.lua",
-        "lineno": "61",
-        "name": "frecency_storage_path",
-        "notes": [
-          " * Defaults to `~/.hammerspoon/seal_frecency.json`"
-        ],
-        "signature": "Seal.frecency_storage_path",
-        "stripped_doc": "",
-        "type": "Variable"
-      },
-      {
         "def": "Seal.pinnedPrefixes",
         "desc": "A table mapping query prefixes to app/result names that should be pinned to the top",
         "doc": "A table mapping query prefixes to app/result names that should be pinned to the top\n\nNotes:\n * Defaults to `{}` (no pinned prefixes)\n * When the query starts with a pinned prefix, the matching result is boosted above normal prefix/frecency ranking\n * Matching is case-insensitive\n * Example configuration in init.lua:\n   ```\n   spoon.Seal.pinnedPrefixes = {\n       [\"vs\"] = \"Visual Studio Code\",\n       [\"ff\"] = \"Firefox\",\n       [\"cb\"] = \"Google Chrome\",\n   }\n   ```",
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "69",
+        "lineno": "71",
         "name": "pinnedPrefixes",
         "notes": [
           " * Defaults to `{}` (no pinned prefixes)",
@@ -434,7 +420,7 @@
         "doc": "Binds hotkeys for Seal\n\nParameters:\n * mapping - A table containing hotkey modifier/key details for the following (optional) items:\n  * show - This will cause Seal's UI to be shown\n  * toggle - This will cause Seal's UI to be shown or hidden depending on its current state\n\nReturns:\n * The Seal object",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "480",
+        "lineno": "472",
         "name": "bindHotkeys",
         "notes": [],
         "parameters": [
@@ -453,7 +439,7 @@
         "doc": "Calculate the recency score for a given item\n\nParameters:\n * uuid - The unique identifier of the item\n * query - The current query string (unused, kept for API compatibility)\n\nReturns:\n * The last_used timestamp (number), or 0 if no history exists",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "175",
+        "lineno": "155",
         "name": "calculateFrecencyScore",
         "notes": [],
         "parameters": [
@@ -473,7 +459,7 @@
         "doc": "Clear all usage history (reset recency tracking)\n\nParameters:\n * None\n\nReturns:\n * The Seal object",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "354",
+        "lineno": "347",
         "name": "clearFrecencyData",
         "notes": [],
         "parameters": [
@@ -485,6 +471,22 @@
         "signature": "Seal:clearFrecencyData()",
         "stripped_doc": "",
         "type": "Method"
+      },
+      {
+        "def": "Seal.frecency_db_path",
+        "desc": "Path to the SQLite database where frecency data is stored",
+        "doc": "Path to the SQLite database where frecency data is stored\n\nNotes:\n * Defaults to `~/.local/share/hammerspoon/seal.db`\n * SQLite is the only source of truth — Seal does not keep an\n   in-memory copy of frecency data; every read and write hits the DB",
+        "file": "Source/Seal.spoon//init.lua",
+        "lineno": "61",
+        "name": "frecency_db_path",
+        "notes": [
+          " * Defaults to `~/.local/share/hammerspoon/seal.db`",
+          " * SQLite is the only source of truth — Seal does not keep an",
+          "   in-memory copy of frecency data; every read and write hits the DB"
+        ],
+        "signature": "Seal.frecency_db_path",
+        "stripped_doc": "",
+        "type": "Variable"
       },
       {
         "def": "Seal.frecency_enable",
@@ -503,28 +505,17 @@
         "type": "Variable"
       },
       {
-        "def": "Seal.frecency_storage_path",
-        "desc": "Path to the JSON file where frecency data is stored",
-        "doc": "Path to the JSON file where frecency data is stored\n\nNotes:\n * Defaults to `~/.hammerspoon/seal_frecency.json`",
-        "file": "Source/Seal.spoon//init.lua",
-        "lineno": "61",
-        "name": "frecency_storage_path",
-        "notes": [
-          " * Defaults to `~/.hammerspoon/seal_frecency.json`"
-        ],
-        "signature": "Seal.frecency_storage_path",
-        "stripped_doc": "",
-        "type": "Variable"
-      },
-      {
         "def": "Seal:loadFrecencyData()",
-        "desc": "Load frecency data from disk",
-        "doc": "Load frecency data from disk\n\nParameters:\n * None\n\nReturns:\n * The Seal object",
+        "desc": "Ensure the frecency SQLite schema exists.",
+        "doc": "Ensure the frecency SQLite schema exists.\n\nParameters:\n * None\n\nReturns:\n * The Seal object\n\nNotes:\n * Does not load any rows into memory; the SQLite database is the\n   single source of truth and every read hits it directly.",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "90",
+        "lineno": "116",
         "name": "loadFrecencyData",
-        "notes": [],
+        "notes": [
+          " * Does not load any rows into memory; the SQLite database is the",
+          "   single source of truth and every read hits it directly."
+        ],
         "parameters": [
           " * None"
         ],
@@ -541,7 +532,7 @@
         "doc": "Loads a plugin from a given file\n\nParameters:\n * plugin_name - the name of the plugin, without \"seal_\" at the beginning or \".lua\" at the end\n * file - the file where the plugin code is stored.\n\nReturns:\n * The Seal object if the plugin was successfully loaded, `nil` otherwise\n\nNotes:\n * You should normally use `Seal:loadPlugins()`. This method allows you to load plugins\n   from non-standard locations and is mostly a development interface.\n * Some plugins may immediately begin doing background work (e.g. Spotlight searches)",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "414",
+        "lineno": "406",
         "name": "loadPluginFromFile",
         "notes": [
           " * You should normally use `Seal:loadPlugins()`. This method allows you to load plugins",
@@ -565,7 +556,7 @@
         "doc": "Loads a list of Seal plugins\n\nParameters:\n * plugins - A list containing the names of plugins to load\n\nReturns:\n * The Seal object\n\nNotes:\n * The plugins live inside the Seal.spoon directory\n * The plugin names in the list, should not have `seal_` at the start, or `.lua` at the end\n * Some plugins may immediately begin doing background work (e.g. Spotlight searches)",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "442",
+        "lineno": "434",
         "name": "loadPlugins",
         "notes": [
           " * The plugins live inside the Seal.spoon directory",
@@ -587,7 +578,7 @@
         "desc": "A table mapping query prefixes to app/result names that should be pinned to the top",
         "doc": "A table mapping query prefixes to app/result names that should be pinned to the top\n\nNotes:\n * Defaults to `{}` (no pinned prefixes)\n * When the query starts with a pinned prefix, the matching result is boosted above normal prefix/frecency ranking\n * Matching is case-insensitive\n * Example configuration in init.lua:\n   ```\n   spoon.Seal.pinnedPrefixes = {\n       [\"vs\"] = \"Visual Studio Code\",\n       [\"ff\"] = \"Firefox\",\n       [\"cb\"] = \"Google Chrome\",\n   }\n   ```",
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "69",
+        "lineno": "71",
         "name": "pinnedPrefixes",
         "notes": [
           " * Defaults to `{}` (no pinned prefixes)",
@@ -637,7 +628,7 @@
         "doc": "Record a selection in the frecency database\n\nParameters:\n * query - The query string used when the selection was made (currently unused, kept for API compatibility)\n * uuid - The unique identifier of the selected item\n\nReturns:\n * The Seal object",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "142",
+        "lineno": "134",
         "name": "recordSelection",
         "notes": [],
         "parameters": [
@@ -657,7 +648,7 @@
         "doc": "Refresh the list of commands provided by all the currently loaded plugins.\n\nParameters:\n * None\n\nReturns:\n * The Seal object\n\nNotes:\n * Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands.",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "395",
+        "lineno": "387",
         "name": "refreshAllCommands",
         "notes": [
           " * Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands."
@@ -678,7 +669,7 @@
         "doc": "Refresh the list of commands provided by the given plugin.\n\nParameters:\n * plugin_name - the name of the plugin. Should be the name as passed to `loadPlugins()` or `loadPluginFromFile`.\n\nReturns:\n * The Seal object\n\nNotes:\n * Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands.",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "370",
+        "lineno": "362",
         "name": "refreshCommandsForPlugin",
         "notes": [
           " * Most Seal plugins expose a static list of commands (if any), which are registered at the time the plugin is loaded. This method is used for plugins which expose a dynamic or changing (e.g. depending on configuration) list of commands."
@@ -694,31 +685,12 @@
         "type": "Method"
       },
       {
-        "def": "Seal:saveFrecencyData()",
-        "desc": "Save frecency data to disk",
-        "doc": "Save frecency data to disk\n\nParameters:\n * None\n\nReturns:\n * The Seal object",
-        "examples": [],
-        "file": "Source/Seal.spoon//init.lua",
-        "lineno": "117",
-        "name": "saveFrecencyData",
-        "notes": [],
-        "parameters": [
-          " * None"
-        ],
-        "returns": [
-          " * The Seal object"
-        ],
-        "signature": "Seal:saveFrecencyData()",
-        "stripped_doc": "",
-        "type": "Method"
-      },
-      {
         "def": "Seal:show(query)",
         "desc": "Shows the Seal UI",
         "doc": "Shows the Seal UI\n\nParameters:\n * query - An optional string to pre-populate the query box with\n\nReturns:\n * None\n\nNotes:\n * This may be useful if you wish to show Seal in response to something other than its hotkey",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "557",
+        "lineno": "549",
         "name": "show",
         "notes": [
           " * This may be useful if you wish to show Seal in response to something other than its hotkey"
@@ -739,7 +711,7 @@
         "doc": "Shows the Seal UI with clipboard history results directly (no command prefix)\n\nParameters:\n * None\n\nReturns:\n * The Seal object\n\nNotes:\n * This is useful for creating a dedicated hotkey to browse clipboard history\n * The search box will be empty but will filter clipboard items as you type",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "593",
+        "lineno": "585",
         "name": "showPasteboard",
         "notes": [
           " * This is useful for creating a dedicated hotkey to browse clipboard history",
@@ -761,7 +733,7 @@
         "doc": "Sort choices using multi-level ranking with explicit precedence\n\nParameters:\n * choices - A table of choice items\n * query - The current query string (used for prefix matching)\n\nReturns:\n * The sorted choices table\n\nNotes:\n * Ranking dimensions in order of precedence:\n   1. Priority tier - High-priority plugins (score >= 50000) always win\n   2. Pinned/Provider prefix - Results matching pinnedPrefixes OR urlformat provider prefixes\n   3. Prefix match - Items starting with query beat substring matches\n   4. Frecency - Previously selected items ranked by most recent use\n   5. Alphabetical - Final tiebreaker for consistent ordering\n * To add new ranking dimensions, insert a comparison block at the\n   appropriate precedence level in the sort comparator",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "198",
+        "lineno": "173",
         "name": "sortChoices",
         "notes": [
           " * Ranking dimensions in order of precedence:",
@@ -790,7 +762,7 @@
         "doc": "Starts Seal\n\nParameters:\n * None\n\nReturns:\n * The Seal object",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "513",
+        "lineno": "505",
         "name": "start",
         "notes": [],
         "parameters": [
@@ -809,7 +781,7 @@
         "doc": "Stops Seal\n\nParameters:\n * None\n\nReturns:\n * The Seal object\n\nNotes:\n * Some Seal plugins will continue performing background work even after this call (e.g. Spotlight searches)",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "533",
+        "lineno": "525",
         "name": "stop",
         "notes": [
           " * Some Seal plugins will continue performing background work even after this call (e.g. Spotlight searches)"
@@ -830,7 +802,7 @@
         "doc": "Shows or hides the Seal UI\n\nParameters:\n * query - An optional string to pre-populate the query box with\n\nReturns:\n * None",
         "examples": [],
         "file": "Source/Seal.spoon//init.lua",
-        "lineno": "575",
+        "lineno": "567",
         "name": "toggle",
         "notes": [],
         "parameters": [
