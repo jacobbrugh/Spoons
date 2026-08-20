@@ -154,13 +154,13 @@ local function fetchFull(id)
     return resp.entry.text_content
 end
 
---- Read the sync daemon's status file.
----
---- Returns nil when sync is healthy, otherwise `state, message` where state
---- is "needs_auth" (the OIDC grant is dead — only re-authenticating fixes
---- it) or "error" (transient). The two are kept apart because the fix is
---- completely different, and an inert "something went wrong" row is how a
---- dead login went unnoticed for four months.
+-- Read the sync daemon's status file.
+--
+-- Returns nil when sync is healthy, otherwise `state, message` where state
+-- is "needs_auth" (the OIDC grant is dead — only re-authenticating fixes
+-- it) or "error" (transient). The two are kept apart because the fix is
+-- completely different, and an inert "something went wrong" row is how a
+-- dead login went unnoticed for four months.
 local function checkSyncStatus()
     local home = os.getenv("HOME")
     if not home then return nil end
@@ -175,7 +175,7 @@ local function checkSyncStatus()
     return status.status or "error", status.error or "Unknown sync error"
 end
 
---- First existing path from obj.cliCandidates, or nil.
+-- First existing path from obj.cliCandidates, or nil.
 local function findCli()
     for _, path in ipairs(obj.cliCandidates) do
         if hs.fs.attributes(path, "mode") == "file" then return path end
@@ -183,9 +183,9 @@ local function findCli()
     return nil
 end
 
---- Kick off the device-code login. `--open-browser` sends the pre-filled
---- verification URL straight to the default browser, so the whole recovery
---- is: open Seal, hit the warning row, click Yes.
+-- Kick off the device-code login. `--open-browser` sends the pre-filled
+-- verification URL straight to the default browser, so the whole recovery
+-- is: open Seal, hit the warning row, click Yes.
 local function reauthenticate()
     local cli = findCli()
     if not cli then
