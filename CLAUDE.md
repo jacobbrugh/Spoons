@@ -177,7 +177,7 @@ The Hammerspoon config (`~/.config/hammerspoon/init.lua`) uses SpoonInstall to a
 hs.loadSpoon("SpoonInstall")
 Install = spoon.SpoonInstall
 Install.repos.default = {
-    url = "https://github.com/jacobpbrugh/Spoons",
+    url = "https://github.com/jacobbrugh/Spoons",
     desc = "My Hammerspoon Spoon repository",
     branch = "master",
 }
@@ -207,7 +207,7 @@ Install:installSpoonFromRepo("Seal")
 3. **Push to GitHub** and wait for CI
    ```bash
    git push
-   # Watch CI at: https://github.com/jacobpbrugh/Spoons/actions
+   # Watch CI at: https://github.com/jacobbrugh/Spoons/actions
    ```
 
 4. **If CI fails**, fix the issue, amend, and force push:
@@ -272,7 +272,7 @@ local function createPreview(text)
 | Push | `git push` |
 | Fix + amend | `git add -A && git commit --amend --no-edit` |
 | Force push | `git push --force-with-lease` |
-| Check CI | https://github.com/jacobpbrugh/Spoons/actions |
+| Check CI | https://github.com/jacobbrugh/Spoons/actions |
 | Apply changes | Quit and restart Hammerspoon |
 
 ## Common Spoon Patterns
