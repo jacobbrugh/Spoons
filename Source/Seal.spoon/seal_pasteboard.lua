@@ -36,6 +36,20 @@ obj.socketPath = (os.getenv("HOME") or "") ..
 --- Path to a `nc`/`netcat` binary that supports `-U` (unix sockets).
 obj.nc = "/usr/bin/nc"
 
+--- Seal.plugins.pasteboard.cliCandidates
+--- Variable
+--- Where to look for the clipboard-cli binary, in order. Hammerspoon does
+--- not inherit a login-shell PATH, so `hs.task` needs an absolute path and
+--- a bare name would never resolve. home-manager installs it under
+--- /etc/profiles/per-user on nix-darwin; the others are fallbacks for a
+--- standalone home-manager or a plain cargo install.
+obj.cliCandidates = {
+    "/etc/profiles/per-user/" .. (os.getenv("USER") or "") .. "/bin/clipboard-cli",
+    (os.getenv("HOME") or "") .. "/.nix-profile/bin/clipboard-cli",
+    (os.getenv("HOME") or "") .. "/.local/bin/clipboard-cli",
+    "/usr/local/bin/clipboard-cli",
+}
+
 function obj:commands()
     return {
         pb = {
@@ -140,6 +154,13 @@ local function fetchFull(id)
     return resp.entry.text_content
 end
 
+--- Read the sync daemon's status file.
+---
+--- Returns nil when sync is healthy, otherwise `state, message` where state
+--- is "needs_auth" (the OIDC grant is dead — only re-authenticating fixes
+--- it) or "error" (transient). The two are kept apart because the fix is
+--- completely different, and an inert "something went wrong" row is how a
+--- dead login went unnoticed for four months.
 local function checkSyncStatus()
     local home = os.getenv("HOME")
     if not home then return nil end
@@ -150,10 +171,47 @@ local function checkSyncStatus()
     f:close()
     local status = hs.json.decode(content)
     if not status then return nil end
-    if status.status ~= "ok" then
-        return status.error or "Unknown sync error"
+    if status.status == "ok" then return nil end
+    return status.status or "error", status.error or "Unknown sync error"
+end
+
+--- First existing path from obj.cliCandidates, or nil.
+local function findCli()
+    for _, path in ipairs(obj.cliCandidates) do
+        if hs.fs.attributes(path, "mode") == "file" then return path end
     end
     return nil
+end
+
+--- Kick off the device-code login. `--open-browser` sends the pre-filled
+--- verification URL straight to the default browser, so the whole recovery
+--- is: open Seal, hit the warning row, click Yes.
+local function reauthenticate()
+    local cli = findCli()
+    if not cli then
+        print("seal_pasteboard: clipboard-cli not found in " ..
+            table.concat(obj.cliCandidates, ", "))
+        hs.notify.new({
+            title = "Clipboard sync",
+            informativeText = "clipboard-cli not found — cannot re-authenticate.",
+        }):send()
+        return
+    end
+    hs.task.new(cli, function(code, stdout, stderr)
+        if code == 0 then
+            hs.notify.new({
+                title = "Clipboard sync",
+                informativeText = "Signed in again.",
+            }):send()
+        else
+            print("seal_pasteboard: clipboard-cli auth failed (" .. tostring(code) .. ")")
+            print(tostring(stdout) .. tostring(stderr))
+            hs.notify.new({
+                title = "Clipboard sync",
+                informativeText = "Sign-in failed — see the Hammerspoon console.",
+            }):send()
+        end
+    end, { "auth", "--open-browser" }):start()
 end
 
 function obj.choicesPasteboardCommand(query)
@@ -164,8 +222,15 @@ function obj.choicesPasteboardCommand(query)
         choices = fetchSearch(query, obj.searchLimit)
     end
 
-    local syncError = checkSyncStatus()
-    if syncError then
+    local syncState, syncError = checkSyncStatus()
+    if syncState == "needs_auth" then
+        table.insert(choices, 1, {
+            text = "⚠ Clipboard sync: sign in again",
+            subText = "Press enter to re-authenticate — " .. syncError,
+            plugin = obj.__name,
+            type = "reauth",
+        })
+    elseif syncState then
         table.insert(choices, 1, {
             text = "⚠ Clipboard sync error",
             subText = syncError,
@@ -177,6 +242,10 @@ function obj.choicesPasteboardCommand(query)
 end
 
 function obj.completionCallback(rowInfo)
+    if rowInfo["type"] == "reauth" then
+        reauthenticate()
+        return
+    end
     if rowInfo["type"] ~= "copy" then return end
     local full = fetchFull(rowInfo["uuid"])
     if not full or full == "" then
