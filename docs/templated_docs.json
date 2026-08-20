@@ -19613,6 +19613,20 @@
     "Method": [],
     "Variable": [
       {
+        "def": "Seal.plugins.pasteboard.cliCandidates",
+        "def_gfm": "Seal.plugins.pasteboard.cliCandidates",
+        "desc": "Where to look for the clipboard-cli binary, in order. Hammerspoon does",
+        "desc_gfm": "<p>Where to look for the clipboard-cli binary, in order. Hammerspoon does</p>\n",
+        "doc": "Where to look for the clipboard-cli binary, in order. Hammerspoon does\nnot inherit a login-shell PATH, so `hs.task` needs an absolute path and\na bare name would never resolve. home-manager installs it under\n/etc/profiles/per-user on nix-darwin; the others are fallbacks for a\nstandalone home-manager or a plain cargo install.",
+        "doc_gfm": "<p>Where to look for the clipboard-cli binary, in order. Hammerspoon does\nnot inherit a login-shell PATH, so <code>hs.task</code> needs an absolute path and\na bare name would never resolve. home-manager installs it under\n/etc/profiles/per-user on nix-darwin; the others are fallbacks for a\nstandalone home-manager or a plain cargo install.</p>\n",
+        "file": "Source/Seal.spoon/seal_pasteboard.lua",
+        "lineno": "39",
+        "name": "cliCandidates",
+        "signature": "Seal.plugins.pasteboard.cliCandidates",
+        "stripped_doc": "not inherit a login-shell PATH, so `hs.task` needs an absolute path and\na bare name would never resolve. home-manager installs it under\n/etc/profiles/per-user on nix-darwin; the others are fallbacks for a\nstandalone home-manager or a plain cargo install.",
+        "type": "Variable"
+      },
+      {
         "def": "Seal.plugins.pasteboard.historyLimit",
         "def_gfm": "Seal.plugins.pasteboard.historyLimit",
         "desc": "Max rows returned for an empty query (history view).",
@@ -19688,6 +19702,20 @@
     "doc": "Clipboard history backed by the clipboard-cli sync daemon.\n\nPer-keystroke list responses carry only a SUBSTR preview of each\nentry's text; full text is fetched on paste. All socket traffic\ngoes through `nc -U` via `io.popen` — no login shell, no\nclipboard-cli process startup, no hs.execute round-trip.",
     "doc_gfm": "<p>Clipboard history backed by the clipboard-cli sync daemon.</p>\n<p>Per-keystroke list responses carry only a SUBSTR preview of each\nentry's text; full text is fetched on paste. All socket traffic\ngoes through <code>nc -U</code> via <code>io.popen</code> — no login shell, no\nclipboard-cli process startup, no hs.execute round-trip.</p>\n",
     "items": [
+      {
+        "def": "Seal.plugins.pasteboard.cliCandidates",
+        "def_gfm": "Seal.plugins.pasteboard.cliCandidates",
+        "desc": "Where to look for the clipboard-cli binary, in order. Hammerspoon does",
+        "desc_gfm": "<p>Where to look for the clipboard-cli binary, in order. Hammerspoon does</p>\n",
+        "doc": "Where to look for the clipboard-cli binary, in order. Hammerspoon does\nnot inherit a login-shell PATH, so `hs.task` needs an absolute path and\na bare name would never resolve. home-manager installs it under\n/etc/profiles/per-user on nix-darwin; the others are fallbacks for a\nstandalone home-manager or a plain cargo install.",
+        "doc_gfm": "<p>Where to look for the clipboard-cli binary, in order. Hammerspoon does\nnot inherit a login-shell PATH, so <code>hs.task</code> needs an absolute path and\na bare name would never resolve. home-manager installs it under\n/etc/profiles/per-user on nix-darwin; the others are fallbacks for a\nstandalone home-manager or a plain cargo install.</p>\n",
+        "file": "Source/Seal.spoon/seal_pasteboard.lua",
+        "lineno": "39",
+        "name": "cliCandidates",
+        "signature": "Seal.plugins.pasteboard.cliCandidates",
+        "stripped_doc": "not inherit a login-shell PATH, so `hs.task` needs an absolute path and\na bare name would never resolve. home-manager installs it under\n/etc/profiles/per-user on nix-darwin; the others are fallbacks for a\nstandalone home-manager or a plain cargo install.",
+        "type": "Variable"
+      },
       {
         "def": "Seal.plugins.pasteboard.historyLimit",
         "def_gfm": "Seal.plugins.pasteboard.historyLimit",

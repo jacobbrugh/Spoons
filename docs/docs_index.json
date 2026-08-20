@@ -2830,6 +2830,12 @@
     "type": "Module"
   },
   {
+    "desc": "Where to look for the clipboard-cli binary, in order. Hammerspoon does",
+    "module": "Seal.plugins.pasteboard",
+    "name": "cliCandidates",
+    "type": "Variable"
+  },
+  {
     "desc": "Max rows returned for an empty query (history view).",
     "module": "Seal.plugins.pasteboard",
     "name": "historyLimit",
